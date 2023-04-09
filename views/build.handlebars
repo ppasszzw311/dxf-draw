@@ -1,0 +1,390 @@
+<section class="signup-step-container">
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-lg-12">
+        <div class="wizard">
+          <div class="wizard-inner">
+            <div class="connecting-line"></div>
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" aria-expanded="true"><span
+                    class="round-tab">1 </span> <i>Step 1</i></a>
+              </li>
+              <li role="presentation" class="disabled">
+                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" aria-expanded="false"><span
+                    class="round-tab">2</span> <i>Step 2</i></a>
+              </li>
+              <li role="presentation" class="disabled">
+                <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab"><span class="round-tab">3</span>
+                  <i>Step 3</i></a>
+              </li>
+              <li role="presentation" class="disabled">
+                <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab"><span class="round-tab">4</span>
+                  <i>Step 4</i></a>
+              </li>
+
+            </ul>
+          </div>
+
+          <form role="form" action="index.html" class="login-box">
+            <div class="tab-content" id="main_form">
+              <!-- 步驟1 -->
+              <div class="tab-pane active" role="tabpanel" id="step1">
+                <h4 class="text-center">步驟1</h4>
+                <h6 class="text-center">輸入長寬參數</h6>
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="text-center">輸入每格大小</p>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>架長(m) *</label>
+
+                      <select class="form-control" id="item-long" name="item-long">
+                        <option value="1.5">1.5</option>
+                        <option value="1.8">1.8</option>
+                        <option value="1.829">1.829</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>架寬(m) *</label>
+                      <select class="form-control" id="item-width" name="item-width">
+                        <option value="0.762">0.762</option>
+                        <option value="0.8">0.8</option>
+                        <option value="1.2">1.2</option>
+                        <option value="1.35">1.35</option>
+                        <option value="1.4">1.4</option>
+                        <option value="1.5">1.5</option>
+                        <option value="1.8">1.8</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>架高(m) *</label>
+                      <select class="form-control" id="item-height" name="item-height">
+                        <option value="1.5">1.5</option>
+                        <option value="1.7">1.7</option>
+                        <option value="1.8">1.8</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <p class="text-center">輸入平面格數</p>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>長(格數) *</label>
+                      <input class="form-control" type="number" id="item-x-count" name="item-x-count"
+                        placeholder="請輸入格數(長)" value="7">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>寬(格數) *</label>
+                      <input class="form-control" type="number" id="item-y-count" name="item-y-count"
+                        placeholder="請輸入格數(寬)" value="8">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>高(層數) *</label>
+                      <input class="form-control" type="number" id="item-z-count" name="item-z-count"
+                        placeholder="請輸入格數(高)" value="5">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>設定錨定點規則 *</label>
+
+                      <select class="form-control" id="anchor-role" name="anchor-role">
+                        <option value="1">每4樓一個</option>
+                      </select>
+                    </div>
+                  </div>
+
+
+                </div>
+                <ul class="list-inline pull-right">
+                  <li><button type="button" class="default-btn next-step" id="step01">繼續下一步</button></li>
+                </ul>
+              </div>
+
+              <!-- 步驟2 -->
+              <div class="tab-pane" role="tabpanel" id="step2">
+                <h4 class="text-center">步驟 2</h4>
+                <h6 class="text-center">產生平面底圖，輸入高度、梯位、錨定點</h6>
+                <div class="row d-flex justify-content-center">
+                  <div class="col-md-10">
+                    <div class="d-flex justify-content-center m-2" id="selectMode">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="inlineRadio1" value="樓高">
+                        <label class="form-check-label" for="inlineRadio1">樓高</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="inlineRadio2" value="梯位">
+                        <label class="form-check-label" for="inlineRadio2">梯位</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="inlineRadio3" value="錨定點">
+                        <label class="form-check-label" for="inlineRadio3">錨定點</label>
+                      </div>
+                      <div class="resetCood">
+                        <button class="btn btn-primary" type="button" id="btnResetSvg">重設</button>
+                      </div>
+                    </div>
+                    <p class="text-center">梯位、錨定點選取請先按shift鍵並同時選取</p>
+                    <svg id="svg" width="100%" height="450px" viewBox="0 0 600 300">
+                      <g id="rect"></g>
+                      <g id="rectHigh"></g>
+                      <g id="stair"></g>
+                      <g id="anchor"></g>
+                      <g id="rung"></g>
+                      <g id="bracing>"></g>
+                      <g id="desc"></g>
+                    </svg>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="selecter-close" id="control-bar">
+                      <div class="row">
+                        <button class="btn btn-secondary mx-1" type="button" id="btnCancelSelect">取消</button>
+                        <button class="btn btn-success mx-1" type="button" id="btnSaveSelect">儲存</button>
+                      </div>
+                    </div>
+                    <div id="stairSelect"></div>
+                    <div id="anchorSelect"></div>
+                    <!-- 取得游標座標資訊 -->
+                    <div id="info" style="display:none;">
+                      <p id="offset">offset</p>
+                      <p id="client">client</p>
+                      <p id="showSvg">svg</p>
+                    </div>
+                    <!-- 設定 viewBox 用 -->
+                    <div class="manipulate" style="display:none;">
+                      <div id="currentViewBox"></div>
+                      <div class="row d-flex">
+                        <input type="number" name="viewBox-x-min" id="viewBox-x-min" placeholder="x-min">
+                        <input type="number" name="viewBox-y-min" id="viewBox-y-min" placeholder="y-min">
+                        <input type="number" name="viewBox-width" id="viewBox-width" placeholder="width">
+                        <input type="number" name="viewBox-height" id="viewBox-height" placeholder="height">
+                      </div>
+                      <button type="button" id="setViewBoxBtn">設定</button>
+                    </div>
+                  </div>
+                  <!-- 新增內容 -->
+
+                </div>
+
+
+                <ul class="list-inline pull-right">
+                  <li><button type="button" class="default-btn prev-step">回到上一步</button></li>
+                  <li><button type="button" class="default-btn next-step skip-btn" id="download-button">取消</button></li>
+                  <li><button type="button" class="default-btn next-step" id="step02">繼續下一步</button></li>
+                </ul>
+              </div>
+
+              <!-- 步驟3 -->
+              <div class="tab-pane" role="tabpanel" id="step3">
+                <h4 class="text-center">步驟 3</h4>
+                <h6 class="text-center">產生正、側視圖，輸入橫桿高、錨定點、生成斜撐</h6>
+                <div class="row">
+                  <div class="col-md-10">
+                    <div class="d-flex justify-content-center m-2" id="selectMode2">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView01" value="平面圖">
+                        <label class="form-check-label" for="fiveView01">平面圖</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView02" value="左側視圖">
+                        <label class="form-check-label" for="fiveView02">左側視圖</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView03" value="正面圖">
+                        <label class="form-check-label" for="fiveView03">正面圖</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView04" value="右側視圖">
+                        <label class="form-check-label" for="fiveView04">右側視圖</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView05" value="後視圖">
+                        <label class="form-check-label" for="fiveView05">後視圖</label>
+                      </div>
+                    </div>
+
+                    <svg id="step03Svg" width="100%" height="450px" viewBox="0 0 600 300">
+                      <g id="step03rect">
+                        <g id="topView"></g>
+                        <g id="frontView"></g>
+                        <g id="rearView"></g>
+                        <g id="leftSideView"></g>
+                        <g id="rightSideView"></g>
+                        <g id="anchorFiveView"></g>
+                      </g>
+
+                    </svg>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="all-info-container">
+                      <div class="list-content">
+                        <div class="form-group">
+                          <label>選擇橫桿規則</label>
+
+                          <select class="form-control" id="rungRole" name="rungRole">
+                            <option value="1">0.45一根</option>
+                            <option value="2">0.45, 0.9 兩根</option>
+                            <option value="3">0.45, 0.9, 1.35 三根</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="list-content">
+                        <a href="#listtwo" data-toggle="collapse" aria-expanded="false" aria-controls="listtwo">錨定點高度
+                          <i class="fa fa-chevron-down"></i></a>
+                        <div class="collapse show" id="listtwo">
+                          <div class="list-box" id="anchorSelect3D">
+                          </div>
+                          <div>
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                              data-target="#addAnchorModal">
+                              新增錨定點
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="list-content">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                          加入文字註解
+                        </button>
+                      </div>
+                    </div>
+                    <div class="selecter-close" id="control-bar">
+                      <div class="row">
+                        <button class="btn btn-secondary mx-1" type="button" id="btnCancelSelect">取消</button>
+                        <button class="btn btn-success mx-1" type="button" id="btnSaveSelect1">儲存</button>
+                      </div>
+                    </div>
+                    <div id="stairSelect"></div>
+
+                    <!-- 取得游標座標資訊 -->
+                    <div id="info" style="display:none;">
+                      <p id="offset">offset</p>
+                      <p id="client">client</p>
+                      <p id="showSvg">svg</p>
+                    </div>
+                    <!-- 設定 viewBox 用 -->
+                    <div class="manipulate" style="display:none;">
+                      <div id="currentViewBox"></div>
+                      <div class="row d-flex">
+                        <input type="number" name="viewBox-x-min" id="viewBox-x-min" placeholder="x-min">
+                        <input type="number" name="viewBox-y-min" id="viewBox-y-min" placeholder="y-min">
+                        <input type="number" name="viewBox-width" id="viewBox-width" placeholder="width">
+                        <input type="number" name="viewBox-height" id="viewBox-height" placeholder="height">
+                      </div>
+                      <button type="button" id="setViewBoxBtn">設定</button>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+
+                  </div>
+                  <div class="col-md-7">
+
+                  </div>
+                </div>
+                <ul class="list-inline pull-right">
+                  <li><button type="button" class="default-btn prev-step">返回上一步</button></li>
+                  <li><button type="button" class="default-btn next-step skip-btn">取消</button></li>
+                  <li><button type="button" class="default-btn next-step" id="step03">繼續前往下一步</button></li>
+                </ul>
+              </div>
+
+              <!-- 步驟4 -->
+              <div class="tab-pane" role="tabpanel" id="step4">
+                <h4 class="text-center">步驟 4</h4>
+                <h6 class="text-center">三視圖結果、匯出</h6>
+                <div class="all-info-container">
+                  <img src="../unnamed.png" alt="">
+                </div>
+
+                <ul class="list-inline pull-right">
+                  <li><button type="button" class="default-btn prev-step">返回上一步</button></li>
+                  <li><button type="button" class="default-btn next-step" id="finishAndDownload">完成</button></li>
+                  <div id="dxf"></div>
+                </ul>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+
+          </form>
+
+
+          <div class="alert alert-primary fade">試試</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="desctextView">加入文字註解（尚未開放）</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control" aria-label="With textarea" id="descText"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+        <button type="button" class="btn btn-primary" id="saveDescText">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addAnchorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="desctextView">新增錨定點</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>座標X *</label>
+          <input class="form-control" type="number" id="addAnchorInfoX" />
+        </div>
+        <div class="form-group">
+          <label>座標Y *</label>
+          <input class="form-control" type="number" id="addAnchorInfoY" />
+        </div>
+        <div class="form-group">
+          <label>座標Z *</label>
+          <input class="form-control" type="number" id="addAnchorInfoZ" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+        <button type="button" class="btn btn-primary" id="saveAddAnchor">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="./javascript/svgSet.js"></script>
+<link rel="stylesheet" href="./stylesheet/svgSet.css" />
+<script>
+  document.addEventListener("dblclick", e => {
+    console.log("hello world")
+  })
+</script>
