@@ -26,15 +26,13 @@
             </ul>
           </div>
 
-          
+
 
           <form role="form" action="index.html" class="login-box">
             <div class="tab-content" id="main_form">
               <!-- 步驟1 -->
               <div class="tab-pane active" role="tabpanel" id="step1">
-                <h4 class="text-center">步驟1</h4>
-                <h6 class="text-center">輸入長寬參數</h6>
-                <div class="row">
+                
                   <div class="col-md-12">
                     <p class="text-center">輸入每格大小</p>
                   </div>
@@ -113,7 +111,7 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label>設定錨定點規則 *</label>
-                  
+
                       <select class="form-control" id="anchor-role" name="anchor-role">
                         <option value="1">每3樓一個</option>
                       </select>
@@ -124,7 +122,9 @@
                 </div>
                 <ul class="list-inline pull-right">
                   <li><button type="button" class="default-btn next-step" id="step01">繼續下一步</button></li>
-                </ul>
+                </ul><h4 class="text-center">步驟1</h4>
+                <h6 class="text-center">輸入長寬參數</h6>
+                <div class="row">
               </div>
 
               <!-- 步驟2 -->
@@ -162,7 +162,7 @@
                         <g id="desc"></g>
                       </svg>
                     </div>
-                    
+
                   </div>
                   <div class="col-md-2 info-list">
                     <div class="selecter-close" id="control-bar">
@@ -264,7 +264,8 @@
                           <div class="list-box" id="anchorSelect3D">
                           </div>
                           <div>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAnchorModal">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                              data-target="#addAnchorModal">
                               新增錨定點
                             </button>
                           </div>
@@ -615,7 +616,7 @@
     group.appendChild(shape);
   }
 
-  
+
 
   // 座標編號
   function descGridText(x, y, width, height, number) {
@@ -667,35 +668,7 @@
       }, 1000)
 
       if (typeof value !== "undefined") {
-        dblclickEvent.addEventListener('click', function (e) {
-          clearEventBubble(e);
-          const svgContainer = this;
-          if (svgContainer.classList.contains('clicked')) {
-            svgContainer.classList.remove('clicked');
-            svgContainer.classList.add('dblclick')
-            console.log("hello")
-            mouseStopId = setTimeout(function () {
-              mouseOn = true;
-              startX = e.clientX;
-              startY = e.clientY;
-              var selDiv = document.createElement('div');
-              selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
-              selDiv.id = 'selectDiv';
-              document.body.appendChild(selDiv);
-              selDiv.style.left = startX + 'px';
-              selDiv.style.top = startY + 'px';
-            }, 300);
-            //here is your code for double click
-          } else {
-            svgContainer.classList.add('clicked');
-            setTimeout(function () {
-              if (svgContainer.classList.contains('clicked')) {
-                svgContainer.classList.remove('clicked');
-
-              }
-            }, 500);
-          }
-        });
+        dblclickEvent.addEventListener('click', onMouseDbClick);
         document.addEventListener("mousemove", onMouseMoveMode)
         if (value.includes("梯位")) {
           //document.addEventListener("mousedown", onMouseDownMode)
@@ -744,9 +717,40 @@
       }
     })
 
+    // 滑鼠雙擊事件
+    function onMouseDbClick(e) {
+      clearEventBubble(e);
+      const svgContainer = this;
+      if (svgContainer.classList.contains('clicked')) {
+        svgContainer.classList.remove('clicked');
+        svgContainer.classList.add('dblclick')
+        console.log("hello")
+        mouseStopId = setTimeout(function () {
+          mouseOn = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          var selDiv = document.createElement('div');
+          selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
+          selDiv.id = 'selectDiv';
+          document.body.appendChild(selDiv);
+          selDiv.style.left = startX + 'px';
+          selDiv.style.top = startY + 'px';
+        }, 300);
+        //here is your code for double click
+      } else {
+        svgContainer.classList.add('clicked');
+        setTimeout(function () {
+          if (svgContainer.classList.contains('clicked')) {
+            svgContainer.classList.remove('clicked');
+
+          }
+        }, 500);
+      }
+    }
+
     function onMouseUpMode(e) {
-      
-      if (dblclickEvent.classList.contains('dblclick')){
+
+      if (dblclickEvent.classList.contains('dblclick')) {
         if (!mouseOn) return;
         clearEventBubble(e);
         mouseOn = false;
@@ -785,7 +789,7 @@
     }
 
     function onMouseMoveMode(e) {
-      if(dblclickEvent.classList.contains('dblclick')) {
+      if (dblclickEvent.classList.contains('dblclick')) {
         if (!mouseOn) return;
         clearEventBubble(e);
         var _x = e.clientX;
@@ -857,7 +861,7 @@
         selDiv.style.display = 'none';
         anchorSelectClose();
       }
-      
+
 
     }
 
@@ -928,8 +932,8 @@
         // 恢复参数
         setTimeout(setRectHighInput(selectedEls), 400)
       }
-      
-      
+
+
     }
 
     function onMouseMoveModeHigh(e) {
@@ -963,7 +967,7 @@
       }
     }
 
-    
+
     function clearEventBubble(e) {
       if (e.stopPropagation) e.stopPropagation();
       else e.cancelBubble = true;
@@ -1249,7 +1253,7 @@
     z: 0
   };
   let threeViewCount;
-  let xyArray = [] 
+  let xyArray = []
   // 建立三視圖
   function buildThreeView() {
 
@@ -1581,70 +1585,70 @@
     console.log(scaffoldArray)
   }
 
-// 建立樓高
-function setRectHighInput(rectArray) {
-  const selDiv = document.getElementById("selectDiv")
-  selDiv.style.display = 'none'
-  let str = ``
-  
-  rectArray.forEach(el => {
-    const coord = el.id.split('_')
-    str += `, (${coord[1]}, ${coord[2]})`
-  })
-  str = str.substring(1, str.length)
-  if (rectArray.length > 0) {
-      inputValue = prompt(`座標組[${str}] 請輸入數值`)
-  if (inputValue !== "") {
-    if (inputValue === '0') {
-      rectArray.forEach(el => {
-        const coord = el.id.split('_')
-        rectHigh.removeChild(document.getElementById(`text_rect_${coord[1]}_${coord[2]}`))
-        el.remove();
-        try {
-          stair.removeChild(document.getElementById(`stair_${coord[1]}_${coord[2]}`))
-        } catch(e) {
-        }
-      })
-    } else if (Number(inputValue) > 0) {
-      rectArray.forEach(el => {
-        const coord = el.id.split('_')
-        document.querySelector(`#text_rect_${coord[1]}_${coord[2]}`).innerHTML = inputValue
-      }) 
-    }
-  } 
-  }
-}
+  // 建立樓高
+  function setRectHighInput(rectArray) {
+    const selDiv = document.getElementById("selectDiv")
+    selDiv.style.display = 'none'
+    let str = ``
 
-/** 
- * 回到步驟二
- */ 
-const backToStep03 = document.getElementById("backTostep03")
-backToStep03.addEventListener("click", e => {
-  const topView03 = document.getElementById("topView")
-  const frontView03 = document.getElementById("frontView03")
-  const rearView03 = document.getElementById("rearView")
-  const leftSideView03 = document.getElementById("leftSideView")
-  const rightSideView03 = document.getElementById("rightSideView")
-  const anchor3D_view = document.getElementById("anchorFiveView")
-  while (topView03.firstChild) {
-    topView03.removeChild(topView03.firstChild)
+    rectArray.forEach(el => {
+      const coord = el.id.split('_')
+      str += `, (${coord[1]}, ${coord[2]})`
+    })
+    str = str.substring(1, str.length)
+    if (rectArray.length > 0) {
+      inputValue = prompt(`座標組[${str}] 請輸入數值`)
+      if (inputValue !== "") {
+        if (inputValue === '0') {
+          rectArray.forEach(el => {
+            const coord = el.id.split('_')
+            rectHigh.removeChild(document.getElementById(`text_rect_${coord[1]}_${coord[2]}`))
+            el.remove();
+            try {
+              stair.removeChild(document.getElementById(`stair_${coord[1]}_${coord[2]}`))
+            } catch (e) {
+            }
+          })
+        } else if (Number(inputValue) > 0) {
+          rectArray.forEach(el => {
+            const coord = el.id.split('_')
+            document.querySelector(`#text_rect_${coord[1]}_${coord[2]}`).innerHTML = inputValue
+          })
+        }
+      }
+    }
   }
-  while (frontView03.firstChild) {
-    frontView03.removeChild(frontView03.firstChild)
-  }
-  while (rearView03.firstChild) {
-    rearView03.removeChild(rearView03.firstChild)
-  }
-  while (leftSideView03.firstChild) {
-    leftSideView03.removeChild(leftSideView03.firstChild)
-  }
-  while (rightSideView03.firstChild) {
-    rightSideView03.removeChild(rightSideView03.firstChild)
-  }
-  while (anchor3D_view.firstChild) {
-    anchor3D_view.removeChild(anchor3D_view.firstChild)
-  }
-})
+
+  /** 
+   * 回到步驟二
+   */
+  const backToStep03 = document.getElementById("backTostep03")
+  backToStep03.addEventListener("click", e => {
+    const topView03 = document.getElementById("topView")
+    const frontView03 = document.getElementById("frontView03")
+    const rearView03 = document.getElementById("rearView")
+    const leftSideView03 = document.getElementById("leftSideView")
+    const rightSideView03 = document.getElementById("rightSideView")
+    const anchor3D_view = document.getElementById("anchorFiveView")
+    while (topView03.firstChild) {
+      topView03.removeChild(topView03.firstChild)
+    }
+    while (frontView03.firstChild) {
+      frontView03.removeChild(frontView03.firstChild)
+    }
+    while (rearView03.firstChild) {
+      rearView03.removeChild(rearView03.firstChild)
+    }
+    while (leftSideView03.firstChild) {
+      leftSideView03.removeChild(leftSideView03.firstChild)
+    }
+    while (rightSideView03.firstChild) {
+      rightSideView03.removeChild(rightSideView03.firstChild)
+    }
+    while (anchor3D_view.firstChild) {
+      anchor3D_view.removeChild(anchor3D_view.firstChild)
+    }
+  })
 
 
   // 取得長方形點
@@ -1682,7 +1686,7 @@ backToStep03.addEventListener("click", e => {
   //      console.error(e)
   //    }
   //  }
- // })
+  // })
 
   // 取得滑鼠滾動
 
@@ -1734,20 +1738,20 @@ backToStep03.addEventListener("click", e => {
   const saveAddAnchor = document.getElementById("saveAddAnchor")
   saveAddAnchor.addEventListener('click', e => {
     e.preventDefault();
-    const addAnchorInfoX =document.getElementById("addAnchorInfoX").value
-    const addAnchorInfoY =document.getElementById("addAnchorInfoY").value
-    const addAnchorInfoZ =document.getElementById("addAnchorInfoZ").value
+    const addAnchorInfoX = document.getElementById("addAnchorInfoX").value
+    const addAnchorInfoY = document.getElementById("addAnchorInfoY").value
+    const addAnchorInfoZ = document.getElementById("addAnchorInfoZ").value
     if (addAnchorInfoX === "" && addAnchorInfoY === "" && addAnchorInfoZ === "") {
       console.log("str是空字串");
     } else {
-      scaffoldArray.anchorPoint.push({x:parseInt(addAnchorInfoX),y:parseInt(addAnchorInfoY),z:parseInt(addAnchorInfoZ)})
+      scaffoldArray.anchorPoint.push({ x: parseInt(addAnchorInfoX), y: parseInt(addAnchorInfoY), z: parseInt(addAnchorInfoZ) })
       console.log(xyArray)
       getAnchorArray(xyArray)
     }
     $("#addAnchorModal").modal('hide')
   })
 
-  
+
 
 </script>
 <script>

@@ -1,0 +1,121 @@
+<div class="drawer-container">
+  <h4 class="text-center">步驟1</h4>
+  <h6 class="text-center">輸入長寬參數</h6>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-center">輸入每格大小</p>
+    </div>
+    <form class="row" action="/step02" method="POST">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>架長(m) *</label>
+
+          <select class="form-control" id="item-long" name="item-long">
+            <option value="1.5">1.5</option>
+            <option value="1.8">1.8</option>
+            <option value="1.829">1.829</option>
+            <option value="1.35">1.35</option>
+            <option value="1">1</option>
+            <option value="0.9">0.9</option>
+            <option value="0.7">0.7</option>
+            <option value="0.6">0.6</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>架寬(m) *</label>
+          <select class="form-control" id="item-width" name="item-width">
+            <option value="0.762">0.762</option>
+            <option value="0.8">0.8</option>
+            <option value="1.2">1.2</option>
+            <option value="1.35">1.35</option>
+            <option value="1.4">1.4</option>
+            <option value="1.5">1.5</option>
+            <option value="1.8">1.8</option>
+            <option value="0.7">0.7</option>
+            <option value="0.9">0.9</option>
+            <option value="0.6">0.6</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>架高(m) *</label>
+          <select class="form-control" id="item-height" name="item-height">
+            <option value="1.5">1.5</option>
+            <option value="1.7">1.7</option>
+            <option value="1.8">1.8</option>
+            <option value="2.25">2.25</option>
+            <option value="1.35">1.35</option>
+            <option value="0.9">0.9</option>
+            <option value="0.45">0.45</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <p class="text-center">輸入平面格數</p>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>長(格數) *</label>
+          <input class="form-control" type="number" id="item-x-count" name="item-x-count" placeholder="請輸入格數(長)"
+            value="7">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>寬(格數) *</label>
+          <input class="form-control" type="number" id="item-y-count" name="item-y-count" placeholder="請輸入格數(寬)"
+            value="8">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>高(層數) *</label>
+          <input class="form-control" type="number" id="item-z-count" name="item-z-count" placeholder="請輸入格數(高)"
+            value="5">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>設定錨定點規則 *</label>
+
+          <select class="form-control" id="anchor-role" name="anchor-role">
+            <option value="1">每3樓一個</option>
+          </select>
+        </div>
+      </div>
+      <ul class="list-inline pull-right">
+        <li><button type="submit" class="default-btn next-step" id="step01">繼續下一步</button></li>
+      </ul>
+    </form>
+  </div>
+
+  <script>
+    const nextStep = document.getElementById('step01');
+
+    let scaffoldArray = {
+      base: { long: 150, width: 90, height: 180, coordX: 7, coordY: 8, coordZ: 5, },
+      grid: [], stair: [], anchorPoint: [], rung: [], bracing: [],
+      description: { coord: [], text: "" }
+    }
+
+    // 輸入框定義值
+    // 步驟一 base information, 如果數值改變就更新數值
+    recordBaseinfo()
+    function recordBaseinfo() {
+      scaffoldArray.base.coordX = Number(document.querySelector("#item-x-count").value)
+      scaffoldArray.base.coordY = Number(document.querySelector("#item-y-count").value)
+      scaffoldArray.base.coordZ = Number(document.querySelector("#item-z-count").value)
+      scaffoldArray.base.long = Number(document.querySelector("#item-long").value)
+      scaffoldArray.base.width = Number(document.querySelector("#item-width").value)
+      scaffoldArray.base.height = Number(document.querySelector("#item-height").value)
+    }
+    // 進入步驟二畫方格圖
+    nextStep.addEventListener('click', e => {
+      recordBaseinfo()
+      axios.
+  })
+  </script>

@@ -23,6 +23,11 @@ app.set('views', './views')
 app.get('/', menu.start)
 app.get('/step', menu.stepMake)
 app.get('/built', menu.built)
+// 逐步一頁一頁處理
+app.get('/step01', menu.step01)
+app.post('/step02', menu.step02)
+app.post('/step03', menu.step03)
+app.post('/step04', menu.step04)
 app.post('/convert', (req, res) => {
   // 从请求中获取SVG文件数据
   const svg = req.body.svg;
