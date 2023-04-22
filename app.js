@@ -23,6 +23,7 @@ app.set('views', './views')
 app.get('/', menu.start)
 app.get('/step', menu.stepMake)
 app.get('/built', menu.built)
+app.get('/newpage', menu.newPage)
 // 逐步一頁一頁處理
 app.get('/step01', menu.step01)
 app.post('/step02', menu.step02)

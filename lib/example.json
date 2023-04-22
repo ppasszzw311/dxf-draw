@@ -1,0 +1,151 @@
+{
+    "fileName": "dxfTest",
+    "base": {
+        "long": 1.5,
+        "width": 0.9,
+        "height": 1.8,
+        "coordX": 7,
+        "coordY": 8,
+        "coordZ": 6,
+        "scaling": 1
+    },
+    "role": {
+        "acnchor": 1,
+        "rung":1
+    },
+    "fiveViewGrid": {
+        "topView":[
+            {
+                "id": "1_1_1",
+                "viewId": "1_1",
+                "coord": [0,0],
+                "border": [1,1]
+            },
+            {
+                "id": "1_2_1",
+                "viewId": "1_2",
+                "coord": [0,1],
+                "border": [1,1]
+            },
+            {
+                "id": "2_1_1",
+                "viewId": "2_1",
+                "coord": [1,0],
+                "border": [1,1]
+            },
+            {
+                "id": "2_2_1",
+                "viewId": "2_2",
+                "coord": [1,1],
+                "border": [1,1]
+            }
+        ],
+        "leftSideView":[
+            {
+                "id": "1_1_1",
+                "viewId": "1_1",
+                "coord": [0,0],
+                "border": [1,1]
+            },
+            {
+                "id": "1_2_1",
+                "viewId": "1_2",
+                "coord": [0,1],
+                "border": [1,1]
+            },
+            {
+                "id": "2_1_1",
+                "viewId": "2_1",
+                "coord": [1,0],
+                "border": [1,1]
+            },
+            {
+                "id": "2_2_1",
+                "viewId": "2_2",
+                "coord": [1,1],
+                "border": [1,1]
+            }
+        ],
+        "rightSideView":[
+            {
+                "id": "1_1_1",
+                "viewId": "1_1",
+                "coord": [0,0],
+                "border": [1,1]
+            },
+            {
+                "id": "1_2_1",
+                "viewId": "1_2",
+                "coord": [0,1],
+                "border": [1,1]
+            },
+            {
+                "id": "2_1_1",
+                "viewId": "2_1",
+                "coord": [1,0],
+                "border": [1,1]
+            },
+            {
+                "id": "2_2_1",
+                "viewId": "2_2",
+                "coord": [1,1],
+                "border": [1,1]
+            }
+        ],
+        "frontView":[
+            {
+                "id": "1_1_1",
+                "viewId": "1_1",
+                "coord": [0,0],
+                "border": [1,1]
+            },
+            {
+                "id": "1_2_1",
+                "viewId": "1_2",
+                "coord": [0,1],
+                "border": [1,1]
+            },
+            {
+                "id": "2_1_1",
+                "viewId": "2_1",
+                "coord": [1,0],
+                "border": [1,1]
+            },
+            {
+                "id": "2_2_1",
+                "viewId": "2_2",
+                "coord": [1,1],
+                "border": [1,1]
+            }
+        ],
+        "rearView":[
+            {
+                "id": "1_1_1",
+                "viewId": "1_1",
+                "coord": [0,0],
+                "border": [1,1]
+            },
+            {
+                "id": "1_2_1",
+                "viewId": "1_2",
+                "coord": [0,1],
+                "border": [1,1]
+            },
+            {
+                "id": "2_1_1",
+                "viewId": "2_1",
+                "coord": [1,0],
+                "border": [1,1]
+            },
+            {
+                "id": "2_2_1",
+                "viewId": "2_2",
+                "coord": [1,1],
+                "border": [1,1]
+            }
+        ]
+    },
+    "height": ["1_1_3", "1_2_3", "2_1_3", "2_2_3"],
+    "stair": ["1_1_3"],
+    "anchor": ["1_1_3"]
+}
