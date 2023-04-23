@@ -16,6 +16,12 @@ let scaffoldArray = {
     grid: [], stair: [], anchor: [], rung: [], bracing: [],
     description: { coord: [], text: "" }
 }
+// 定義長寬高各格子
+let baseWidth = {
+    x: [],
+    y: [],
+    z: []
+}
 
 // 定義最大座標
 let maxborder = {
@@ -76,38 +82,64 @@ submit.addEventListener('click', e => {
             scaffoldArray.base.scaling = 30 / scaffoldArray.base.height
         }
     }
-    // 
-    createBaseGrid();
+    // 建立基礎長度
+    createBaseWidth();
+    //createBaseGrid();
     // 產生平面底圖
     //rectangleSvg(step02StartXY.x, step02StartXY.y, itemValue.itemX, itemValue.itemY, scaffoldArray.base.coordY, scaffoldArray.base.coordX)
     arrowDesc() // 產生箭頭
 })
-let allcount = 0
-/** 畫基礎網格 */
-function createBaseGrid() {
-    const X = scaffoldArray.base.coordX // X格數
-    const Y = scaffoldArray.base.coordY // Y格數
-    const Z = scaffoldArray.base.coordZ // Z格數
-    const Width = scaffoldArray.base.width // 寬
-    const Long = scaffoldArray.base.long // 長
-    const Height = scaffoldArray.base.height // 高
-    const Scale = scaffoldArray.base.scaling // 縮放比例
-    allcount = 0
-    for (i = 0; i < X; i++) {
-        for (j = 0; j < Y; j++) {
-            for (k = 0; k < Z; k++) {
+
+// 畫基礎網格
+function createBaseWidth() {
+    const xCount = scaffoldArray.base.coordX
+    const yCount = scaffoldArray.base.coordY
+    const zCount = scaffoldArray.base.coordZ
+    for (i = 0; i < xCount; i ++) {
+        const item = {id: i + 1, width: scaffoldArray.base.width}
+        baseWidth.x.push(item)
+    }
+    for (i = 0; i < yCount; i++) {
+        const item = { id: i + 1, width: scaffoldArray.base.long }
+        baseWidth.y.push(item)
+    }
+    for (i = 0; i < zCount; i++) {
+        const item = { id: i + 1, width: scaffoldArray.base.height }
+        baseWidth.z.push(item)
+    }
+    drawBaseGrid()
+}
+
+// 畫基礎網格
+function drawBaseGrid() {
+    // 重置所有
+    scaffoldArray.baseGrid = []
+    let yMax = 0
+    baseWidth.y.forEach(el=> {
+        yMax += el.width
+    })
+    console.log(yMax)
+    let x = 0 
+    baseWidth.x.forEach(el => {
+        y = yMax
+        baseWidth.y.forEach(ek => {
+            z = 0
+            y -= ek.width
+            baseWidth.z.forEach(ej => {
                 const gridItem = {
-                    x: i + 1,
-                    y: j + 1,
-                    z: k + 1,
-                    startCoor: [Width * i, Long * j, Height * k],
-                    border: [Width, Long, Height]
+                    x : el.id,
+                    y : ek.id,
+                    z : ej.id,
+                    startCoor : [x, y, z],
+                    border : [el.width, ek.width, ej.width]
                 }
                 scaffoldArray.baseGrid.push(gridItem)
-                allcount += 1
-            }
-        }
-    }
+                z += ej.width
+            })
+            
+        })
+        x += el.width
+    })
     createRectangleSvg(scaffoldArray.baseGrid)
 }
 
@@ -122,13 +154,12 @@ function createRectangleSvg(coorArray) {
     let arrayY = []
     let arrayZ = []
     coorArray.forEach(el => {
-        const itemY = el.startCoor[1] * scale + el.border[1] * scale
+        const itemY = el.startCoor[1] * scale + el.border[1] * scale // y只要找最大的那個
         const itemX = el.startCoor[0] * scale + el.border[0] * scale
         const itemZ = el.startCoor[2] * scale + el.border[2] * scale
         if (itemX > maxX) {
             arrayX.push({ id: el.x, startCoor: el.startCoor[0] * scale, border: el.border[0] * scale });
             maxX = itemX
-            console.log(maxX)
         }
         if (itemY > maxY) {
             arrayY.push({ id: el.y, startCoor: el.startCoor[1] * scale, border: el.border[1] * scale });
@@ -141,15 +172,23 @@ function createRectangleSvg(coorArray) {
     })
     maxborder.x = maxX
     maxborder.y = maxY
+
+    // 重置所有
+    initialStepSvg()
+
     // 畫邊邊
     arrayX.forEach(el => {
         const coorX = parseInt(el.startCoor + step02StartXY.x)
-        const shape = descGridText(coorX, step02StartXY.y, el.border, 30, el.id, "Z")
+        const shape = descGridText(coorX, step02StartXY.y, el.border, 30, el.id, "X")
+        const shapeRect = descGridRect(coorX, 0, el.border, 25, el.id, "X") 
+        desc.appendChild(shapeRect)
         desc.appendChild(shape)
     })
     arrayY.forEach(el => {
         const coordY = parseInt(maxY - el.startCoor + step02StartXY.y - el.border)
-        const shape = descGridText(step02StartXY.x, coordY, el.border, 30, el.id, "Y")
+        const shape = descGridText(step02StartXY.x, coordY,30, el.border, el.id, "Y")
+        const shapeRect = descGridRect(0, coordY, 25, el.border, el.id, "Y") 
+        desc.appendChild(shapeRect)
         desc.appendChild(shape)
     })
     // 畫方格
@@ -180,6 +219,33 @@ function createRectangleSvg(coorArray) {
         rectHigh.appendChild(shapeHigh)
     })
 }
+
+// TODO 網格沒有刪乾淨，y座標的方向錯誤
+
+function initialStepSvg() {
+    // 重置網格
+    const fragment = new DocumentFragment();
+    while (rect.firstChild) {
+        fragment.appendChild(rect.firstChild)
+    }
+    while (fragment.firstChild) {
+        fragment.removeChild(fragment.firstChild);
+    }
+    while (rectHigh.firstChild) {
+        rectHigh.removeChild(rectHigh.firstChild);
+    }
+    while (anchor.firstChild) {
+        anchor.removeChild(anchor.firstChild);
+    }
+    while (stair.firstChild) {
+        stair.removeChild(stair.firstChild);
+    }
+    while (desc.firstChild) {
+        desc.removeChild(desc.firstChild);
+    }
+}
+
+
 
 // 移除重複的array
 function removeDuplicateObjects(array) {
@@ -330,6 +396,49 @@ function descGridText(x, y, width, height, number, type) {
     shape.innerHTML = number;
     return shape
 }
+function descGridRect(x, y, width, height, number, type) {
+    let id = ""
+    if (type === "Y") {
+        id = `descGrid_y_${number}`
+    } else {
+        id = `descGrid_x_${number}`
+    }
+    var svgns = "http://www.w3.org/2000/svg";
+    var shape = document.createElementNS(svgns, "rect");
+    shape.setAttributeNS(null, "id", id)
+    shape.setAttributeNS(null, "x", x);
+    shape.setAttributeNS(null, "y", y); //width="150" height="150"
+    shape.setAttributeNS(null, "width", width)
+    shape.setAttributeNS(null, "height", height);
+    shape.setAttributeNS(null, "fill", "white");
+    shape.setAttributeNS(null, "stroke", "white");
+    return shape
+}
+
+// 新增drid 點擊事件
+desc.addEventListener('click', e => {
+    const targetID = e.target.id
+    if (targetID.split('_')[0] === 'descGrid') {
+        const coord = targetID.split('_')[1]
+        const id = targetID.split('_')[2]
+        const value = prompt(`修改${coord === 'x'? '寬': '長'}第${id}格，請輸入要更改的數值？`)
+        if (value !== "") {
+            if (Number(value) > 0) {
+                if (coord === 'x') {
+                    // 修改x格
+                    item = parseInt(id) - 1
+                    baseWidth.x[item].width = Number(value)
+                } else {
+                    item = parseInt(id) - 1
+                    baseWidth.y[item].width = Number(value)
+                }
+                // 重置網格
+                drawBaseGrid()
+            }
+        }
+    }
+})
+
 
 /** 畫箭頭 */
 function arrowDesc() {
