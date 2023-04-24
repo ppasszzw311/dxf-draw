@@ -89,22 +89,22 @@ submit.addEventListener('click', e => {
     //rectangleSvg(step02StartXY.x, step02StartXY.y, itemValue.itemX, itemValue.itemY, scaffoldArray.base.coordY, scaffoldArray.base.coordX)
     arrowDesc() // 產生箭頭
 })
-
+//drawBaseGrid
 // 畫基礎網格
 function createBaseWidth() {
     const xCount = scaffoldArray.base.coordX
     const yCount = scaffoldArray.base.coordY
     const zCount = scaffoldArray.base.coordZ
-    for (i = 0; i < xCount; i ++) {
-        const item = {id: i + 1, width: scaffoldArray.base.width}
+    for (i = 0; i < xCount; i++) {
+        const item = { id: i + 1, startCoor: i * scaffoldArray.base.width, border: scaffoldArray.base.width }
         baseWidth.x.push(item)
     }
     for (i = 0; i < yCount; i++) {
-        const item = { id: i + 1, width: scaffoldArray.base.long }
+        const item = { id: i + 1, startCoor: i * scaffoldArray.base.long, border: scaffoldArray.base.long }
         baseWidth.y.push(item)
     }
     for (i = 0; i < zCount; i++) {
-        const item = { id: i + 1, width: scaffoldArray.base.height }
+        const item = { id: i + 1, startCoor: i * scaffoldArray.base.height, border: scaffoldArray.base.height }
         baseWidth.z.push(item)
     }
     drawBaseGrid()
@@ -115,30 +115,30 @@ function drawBaseGrid() {
     // 重置所有
     scaffoldArray.baseGrid = []
     let yMax = 0
-    baseWidth.y.forEach(el=> {
-        yMax += el.width
+    baseWidth.y.forEach(el => {
+        yMax += el.border
     })
     console.log(yMax)
-    let x = 0 
+    let x = 0
     baseWidth.x.forEach(el => {
         y = yMax
         baseWidth.y.forEach(ek => {
             z = 0
-            y -= ek.width
+            y -= ek.border
             baseWidth.z.forEach(ej => {
                 const gridItem = {
-                    x : el.id,
-                    y : ek.id,
-                    z : ej.id,
-                    startCoor : [x, y, z],
-                    border : [el.width, ek.width, ej.width]
+                    x: el.id,
+                    y: ek.id,
+                    z: ej.id,
+                    startCoor: [x, y, z],
+                    border: [el.border, ek.border, ej.border]
                 }
                 scaffoldArray.baseGrid.push(gridItem)
-                z += ej.width
+                z += ej.border
             })
-            
+
         })
-        x += el.width
+        x += el.border
     })
     createRectangleSvg(scaffoldArray.baseGrid)
 }
@@ -153,17 +153,22 @@ function createRectangleSvg(coorArray) {
     let arrayX = []
     let arrayY = []
     let arrayZ = []
+    let countY = -0.1
     coorArray.forEach(el => {
         const itemY = el.startCoor[1] * scale + el.border[1] * scale // y只要找最大的那個
         const itemX = el.startCoor[0] * scale + el.border[0] * scale
         const itemZ = el.startCoor[2] * scale + el.border[2] * scale
+        const itemYId = Number(el.y)
         if (itemX > maxX) {
             arrayX.push({ id: el.x, startCoor: el.startCoor[0] * scale, border: el.border[0] * scale });
             maxX = itemX
         }
         if (itemY > maxY) {
-            arrayY.push({ id: el.y, startCoor: el.startCoor[1] * scale, border: el.border[1] * scale });
             maxY = itemY
+        }
+        if (itemYId > countY) {
+            countY = itemYId
+            arrayY.push({ id: el.y, startCoor: el.startCoor[1] * scale, border: el.border[1] * scale });
         }
         if (itemZ > maxZ) {
             arrayZ.push({ id: el.z, startCoor: el.startCoor[2] * scale, border: el.border[2] * scale });
@@ -177,20 +182,20 @@ function createRectangleSvg(coorArray) {
     initialStepSvg()
 
     // 畫邊邊
-    arrayX.forEach(el => {
-        const coorX = parseInt(el.startCoor + step02StartXY.x)
-        const shape = descGridText(coorX, step02StartXY.y, el.border, 30, el.id, "X")
-        const shapeRect = descGridRect(coorX, 0, el.border, 25, el.id, "X") 
-        desc.appendChild(shapeRect)
-        desc.appendChild(shape)
-    })
-    arrayY.forEach(el => {
-        const coordY = parseInt(maxY - el.startCoor + step02StartXY.y - el.border)
-        const shape = descGridText(step02StartXY.x, coordY,30, el.border, el.id, "Y")
-        const shapeRect = descGridRect(0, coordY, 25, el.border, el.id, "Y") 
-        desc.appendChild(shapeRect)
-        desc.appendChild(shape)
-    })
+    //arrayX.forEach(el => {
+    //    const coorX = parseInt(el.startCoor + step02StartXY.x)
+    //    const shape = descGridText(coorX, step02StartXY.y, el.border, 30, el.id, "X")
+    //    const shapeRect = descGridRect(coorX, 0, el.border, 25, el.id, "X")
+    //    desc.appendChild(shapeRect)
+    //    desc.appendChild(shape)
+    //})
+    //arrayY.forEach(el => {
+    //    const coordY = parseInt(maxY - el.startCoor + step02StartXY.y - el.border)
+    //    const shape = descGridText(step02StartXY.x, coordY, 30, el.border, countY - el.id + 1, "Y")
+    //    const shapeRect = descGridRect(0, coordY, 25, el.border, countY - Number(el.id) + 1, "Y")
+    //    desc.appendChild(shapeRect)
+    //    desc.appendChild(shape)
+    //})
     // 畫方格
     let newCoordArray = [];
     coorArray.forEach((el) => {
@@ -217,11 +222,35 @@ function createRectangleSvg(coorArray) {
         const shapeHigh = rectangleHeight(coorX, coorY, width, long, id)
         rect.appendChild(shape)
         rectHigh.appendChild(shapeHigh)
+
+        createDescText(coorX, coorY, width, long, id)
+        // 網格與文字處理
+        
     })
 }
 
-// TODO 網格沒有刪乾淨，y座標的方向錯誤
+// 加入
+function createDescText(coorX, coorY, width, long, id) {
+    const coordX = document.getElementById(`descGrid_x_${id.split('_')[1]}`)
+    const coordY = document.getElementById(`decsGrid_y_${id.split('_')[2]}`)
+    if (!coordX) {
+        // 新增一個
+        const shape = descGridText(coorX, 0, width,25, id.split('_')[1], "X")
+        const shapeRect = descGridRect(coorX, 0, width,25, id.split('_')[1], "X")
+        desc.appendChild(shapeRect)
+        desc.appendChild(shape)
+    }
+    if (!coordY) {
+        // 新增一個
+        const shape = descGridText(0, coorY, 25, long, id.split('_')[2], "Y")
+        const shapeRect = descGridRect(0, coorY, 25, long, id.split('_')[2], "Y")
+        desc.appendChild(shapeRect)
+        desc.appendChild(shape)
+    }
+}
 
+
+// 重製svg網格
 function initialStepSvg() {
     // 重置網格
     const fragment = new DocumentFragment();
@@ -244,8 +273,6 @@ function initialStepSvg() {
         desc.removeChild(desc.firstChild);
     }
 }
-
-
 
 // 移除重複的array
 function removeDuplicateObjects(array) {
@@ -336,18 +363,22 @@ function makeStair(x, y, long, width, rotate) {
     // 将子元素添加为父元素的子元素
     stair.appendChild(childGroup);
 
+    // 取得該網格的起始值跟寬度
+    const array = scaffoldArray.baseGrid.filter((item) => item.x === Number(x) && item.y === Number(y))[0]
+    const startX = array.startCoor[0]
+    const startY = array.startCoor[1]
+    const borderX = array.border[0]
+    const borderY = array.border[1]
+
     // 確認方向
     // 直向
     if (rotate === "x") {
         // 橫向
-        line((x - 1) * width + step02StartXY.x, x * width + step02StartXY.x, maxborder.y - y * long, maxborder.y - y * long, stairId)
+        line(startX,startX + borderX , startY, startY , stairId)
         for (i = 0; i < 5; i++) {
-            let xStart = (x - 1) * width
-            let yStart = y * long
-
-            line(xStart + (i * width / 5) + step02StartXY.x, xStart + (i * width / 5) + step02StartXY.x, maxborder.y - yStart, maxborder.y - yStart - 10, stairId)
+            line(startX + (i * borderX / 5) , startX + (i * borderX / 5) , startY,startY - 10, stairId)
         }
-        line((x - 1) * width + step02StartXY.x, x * width + step02StartXY.x, maxborder.y - y * long - 10, maxborder.y - y * long - 10, stairId)
+        line(startX,startX + borderX , startY - 10, startY - 10  , stairId)
     } else {
         // 直向
         line((x - 1) * width + step02StartXY.x, (x - 1) * width + step02StartXY.x, maxborder.y - (y - 1) * long - long, maxborder.y - y * long - long, stairId)
@@ -380,12 +411,15 @@ function descGridText(x, y, width, height, number, type) {
     if (type === "Y") {
         newX = step02StartXY.x / 2
         newY = y + (height / 2)
+        id = `descGrid_y_${number}`
     } else {
         newY = step02StartXY.y / 2
         newX = x + (width / 2)
+        id = `descGrid_x_${number}`
     }
     var svgns = "http://www.w3.org/2000/svg";
     var shape = document.createElementNS(svgns, "text");
+    shape.setAttributeNS(null, "id", id)
     shape.setAttributeNS(null, "x", newX);
     shape.setAttributeNS(null, "y", newY); //width="150" height="150"
     //shape.setAttributeNS(null, "stroke","#0000FF")
@@ -421,23 +455,59 @@ desc.addEventListener('click', e => {
     if (targetID.split('_')[0] === 'descGrid') {
         const coord = targetID.split('_')[1]
         const id = targetID.split('_')[2]
-        const value = prompt(`修改${coord === 'x'? '寬': '長'}第${id}格，請輸入要更改的數值？`)
+        const value = prompt(`修改${coord === 'x' ? '寬' : '長'}第${id}格，請輸入要更改的數值？`)
         if (value !== "") {
             if (Number(value) > 0) {
                 if (coord === 'x') {
                     // 修改x格
                     item = parseInt(id) - 1
-                    baseWidth.x[item].width = Number(value)
+                    baseWidth.x[item].border = Number(value)
+                    //fixArrayCoor()
                 } else {
-                    item = parseInt(id) - 1
-                    baseWidth.y[item].width = Number(value)
+                    //item = parseInt(id) - 1
+                    //baseWidth.y.find(item => parseInt(item.id) === item ? item.border = Number(value) : item.border)
+                    //baseWidth.y[item].border = Number(value)
+
+                    const targetIndex = parseInt(id) 
+                    const targetObject = baseWidth.y.find(obj => parseInt(obj.id) === targetIndex);
+                    if (targetObject) {
+                        targetObject.border = Number(value);
+                    }
+                    //fixArrayCoor()
                 }
                 // 重置網格
                 drawBaseGrid()
+
+                
             }
         }
     }
 })
+
+// 更改array與之後的值
+function fixArrayCoor() {
+    const array = scaffoldArray.baseGrid
+    let arrX = []
+    let arrY = []
+    x = 0, y = 0
+    baseWidth.x.forEach(el => {arrX.push(x += el.border)})
+    baseWidth.y.forEach(el => arrY.push(y += el.border))
+    let newArr = []
+    array.forEach(el => {
+        const item = {
+            x: el.x,
+            y: el.y,
+            z: el.z,
+            border: [baseWidth.x[el.x-1].border, baseWidth.y[el.y-1].border, el.border[2]],
+            startCoor:[arrX[el.x-1], arrY[el.y-1], el.startCoor[2]]
+        }
+        newArr.push(item)
+    })
+    scaffoldArray.baseGrid = newArr
+    createRectangleSvg(scaffoldArray.baseGrid)
+}
+
+
 
 
 /** 畫箭頭 */
@@ -486,51 +556,27 @@ function selectModeMouse() {
         }, 1000)
 
         if (typeof value !== "undefined") {
-            dblclickEvent.addEventListener('click', onMouseDbClick);
-            document.addEventListener("mousemove", onMouseMoveMode)
+            //dblclickEvent.addEventListener('click', onMouseDbClick);
+            dblclickEvent.addEventListener('mousedown', onMouseDownMode)
+            dblclickEvent.addEventListener("mousemove", onMouseMoveMode)
             if (value.includes("梯位")) {
-                //document.addEventListener("mousedown", onMouseDownMode)
-                //document.addEventListener("mousemove", onMouseMoveMode)
-                document.addEventListener("mouseup", onMouseUpMode)
-                //document.removeEventListener("mousedown", onMouseDownModeAnchor)
-                //document.removeEventListener("mousemove", onMouseMoveModeAnchor)
-                document.removeEventListener("mouseup", onMouseUpModeAnchor)
-                //document.removeEventListener("mousedown", onMouseDownModeHigh)
-                //document.removeEventListener("mousemove", onMouseMoveModeHigh)
-                document.removeEventListener("mouseup", onMouseUpModeHigh)
+                dblclickEvent.addEventListener("mouseup", onMouseUpMode)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpModeAnchor)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpModeHigh)
             } else if (value.includes("樓高")) {
                 // 取得長方形點
-                //document.addEventListener("mousedown", onMouseDownModeHigh)
-                //document.addEventListener("mousemove", onMouseMoveModeHigh)
-                document.addEventListener("mouseup", onMouseUpModeHigh)
-                //document.removeEventListener("mousedown", onMouseDownMode)
-                //document.removeEventListener("mousemove", onMouseMoveMode)
-                document.removeEventListener("mouseup", onMouseUpMode)
-                //document.removeEventListener("mousedown", onMouseDownModeAnchor)
-                //document.removeEventListener("mousemove", onMouseMoveModeAnchor)
-                document.removeEventListener("mouseup", onMouseUpModeAnchor)
-                const reg = document.getElementById("rect")
-
+                dblclickEvent.addEventListener("mouseup", onMouseUpModeHigh)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpMode)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpModeAnchor)
             } else if (value.includes("錨定點")) {
-                //document.removeEventListener("mousedown", onMouseDownMode)
-                //document.removeEventListener("mousemove", onMouseMoveMode)
-                document.removeEventListener("mouseup", onMouseUpMode)
-                //document.addEventListener("mousedown", onMouseDownModeAnchor)
-                //document.addEventListener("mousemove", onMouseMoveModeAnchor)
-                document.addEventListener("mouseup", onMouseUpModeAnchor)
-                //document.removeEventListener("mousedown", onMouseDownModeHigh)
-                //document.removeEventListener("mousemove", onMouseMoveModeHigh)
-                document.removeEventListener("mouseup", onMouseUpModeHigh)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpMode)
+                dblclickEvent.addEventListener("mouseup", onMouseUpModeAnchor)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpModeHigh)
             } else {
-                //document.removeEventListener("mousedown", onMouseDownMode)
-                document.removeEventListener("mousemove", onMouseMoveMode)
-                document.removeEventListener("mouseup", onMouseUpMode)
-                //document.removeEventListener("mousedown", onMouseDownModeAnchor)
-                //document.removeEventListener("mousemove", onMouseMoveModeAnchor)
-                document.removeEventListener("mouseup", onMouseUpModeAnchor)
-                //document.removeEventListener("mousedown", onMouseDownModeHigh)
-                //document.removeEventListener("mousemove", onMouseMoveModeHigh)
-                document.removeEventListener("mouseup", onMouseUpModeHigh)
+                dblclickEvent.removeEventListener("mousemove", onMouseMoveMode)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpMode)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpModeAnchor)
+                dblclickEvent.removeEventListener("mouseup", onMouseUpModeHigh)
             }
         }
     })
@@ -567,9 +613,7 @@ function selectModeMouse() {
     }
 
     function onMouseUpMode(e) {
-
-        if (dblclickEvent.classList.contains('dblclick')) {
-            if (!mouseOn) return;
+        if (!mouseOn) return;
             clearEventBubble(e);
             mouseOn = false;
             var selDiv = document.getElementById('selectDiv');
@@ -601,14 +645,16 @@ function selectModeMouse() {
             // 恢复参数
             selDiv.style.display = 'none';
             stairSelectClose();
-        }
+
+        // if (dblclickEvent.classList.contains('dblclick')) {
+            
+        // }
 
 
     }
 
     function onMouseMoveMode(e) {
-        if (dblclickEvent.classList.contains('dblclick')) {
-            if (!mouseOn) return;
+        if (!mouseOn) return;
             clearEventBubble(e);
             var _x = e.clientX;
             var _y = e.clientY;
@@ -618,30 +664,33 @@ function selectModeMouse() {
             selDiv.style.top = Math.min(_y, startY) + 'px';
             selDiv.style.width = Math.abs(_x - startX) + 'px';
             selDiv.style.height = Math.abs(_y - startY) + 'px';
-        }
+        // if (dblclickEvent.classList.contains('dblclick')) {
+            
+        // }
     }
 
     function onMouseDownMode(e) {
         clearEventBubble(e);
         if (e.buttons !== 1 || e.which !== 1) return;
-        if (e.shiftKey) {
-            mouseStopId = setTimeout(function () {
-                mouseOn = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                var selDiv = document.createElement('div');
-                selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
-                selDiv.id = 'selectDiv';
-                document.body.appendChild(selDiv);
-                selDiv.style.left = startX + 'px';
-                selDiv.style.top = startY + 'px';
-            }, 300);
-        }
+        mouseOn = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            var selDiv = document.createElement('div');
+            selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
+            selDiv.id = 'selectDiv';
+            document.body.appendChild(selDiv);
+            selDiv.style.left = startX + 'px';
+            selDiv.style.top = startY + 'px';
+        // mouseStopId = setTimeout(function () {
+            
+        // }, 300);
     }
 
     function onMouseUpModeAnchor(e) {
-        if (dblclickEvent.classList.contains('dblclick')) {
-            if (!mouseOn) return;
+        // if (dblclickEvent.classList.contains('dblclick')) {
+            
+        // }
+        if (!mouseOn) return;
             clearEventBubble(e);
             mouseOn = false;
             var selDiv = document.getElementById('selectDiv');
@@ -678,45 +727,18 @@ function selectModeMouse() {
             // 恢复参数
             selDiv.style.display = 'none';
             anchorSelectClose();
-        }
 
 
     }
 
-    function onMouseMoveModeAnchor(e) {
-        if (!mouseOn) return;
-        clearEventBubble(e);
-        var _x = e.clientX;
-        var _y = e.clientY;
-        var selDiv = document.getElementById('selectDiv');
-        selDiv.style.display = 'block';
-        selDiv.style.left = Math.min(_x, startX) + 'px';
-        selDiv.style.top = Math.min(_y, startY) + 'px';
-        selDiv.style.width = Math.abs(_x - startX) + 'px';
-        selDiv.style.height = Math.abs(_y - startY) + 'px';
-    }
 
-    function onMouseDownModeAnchor(e) {
-        clearEventBubble(e);
-        if (e.buttons !== 1 || e.which !== 1) return;
-        if (e.shiftKey) {
-            mouseStopId = setTimeout(function () {
-                mouseOn = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                var selDiv = document.createElement('div');
-                selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
-                selDiv.id = 'selectDiv';
-                document.body.appendChild(selDiv);
-                selDiv.style.left = startX + 'px';
-                selDiv.style.top = startY + 'px';
-            }, 300);
-        }
-    }
+
 
     function onMouseUpModeHigh(e) {
-        if (dblclickEvent.classList.contains('dblclick')) {
-            if (!mouseOn) return;
+        // if (dblclickEvent.classList.contains('dblclick')) {
+            
+        // }
+        if (!mouseOn) return;
             clearEventBubble(e);
             mouseOn = false;
             var selDiv = document.getElementById('selectDiv');
@@ -749,41 +771,10 @@ function selectModeMouse() {
             // ===============選擇梯位===================== 確認儲存
             // 恢复参数
             setTimeout(setRectHighInput(selectedEls), 400)
-        }
 
 
     }
 
-    function onMouseMoveModeHigh(e) {
-        if (!mouseOn) return;
-        clearEventBubble(e);
-        var _x = e.clientX;
-        var _y = e.clientY;
-        var selDiv = document.getElementById('selectDiv');
-        selDiv.style.display = 'block';
-        selDiv.style.left = Math.min(_x, startX) + 'px';
-        selDiv.style.top = Math.min(_y, startY) + 'px';
-        selDiv.style.width = Math.abs(_x - startX) + 'px';
-        selDiv.style.height = Math.abs(_y - startY) + 'px';
-    }
-
-    function onMouseDownModeHigh(e) {
-        clearEventBubble(e);
-        if (e.buttons !== 1 || e.which !== 1) return;
-        if (e.shiftKey) {
-            mouseStopId = setTimeout(function () {
-                mouseOn = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                var selDiv = document.createElement('div');
-                selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
-                selDiv.id = 'selectDiv';
-                document.body.appendChild(selDiv);
-                selDiv.style.left = startX + 'px';
-                selDiv.style.top = startY + 'px';
-            }, 300);
-        }
-    }
 
 
     function clearEventBubble(e) {
@@ -1399,10 +1390,6 @@ function buildStant(arr) {
     for (i = 0; i < itemMaxX; i++) {
         let coordX = 0;
     }
-
-    console.log(arr)
-    console.log(itemValue)
-    console.log(scaffoldArray)
 }
 
 // 建立樓高
@@ -1424,6 +1411,7 @@ function setRectHighInput(rectArray) {
                     const coord = el.id.split('_')
                     rectHigh.removeChild(document.getElementById(`text_rect_${coord[1]}_${coord[2]}`))
                     el.remove();
+                    fixRectHeight(`${coord[1]}_${coord[2]}`, inputValue)
                     try {
                         stair.removeChild(document.getElementById(`stair_${coord[1]}_${coord[2]}`))
                     } catch (e) {
@@ -1433,6 +1421,7 @@ function setRectHighInput(rectArray) {
                 rectArray.forEach(el => {
                     const coord = el.id.split('_')
                     document.querySelector(`#text_rect_${coord[1]}_${coord[2]}`).innerHTML = inputValue
+                    fixRectHeight(`${coord[1]}_${coord[2]}`, inputValue)
                 })
             }
         }
@@ -1473,36 +1462,70 @@ backToStep03.addEventListener("click", e => {
 // 取得滑鼠滾動
 
 // 取得長方形點part02
-rectHigh.addEventListener("click", e => {
-    console.log(step02DrawMode)
-    if (step02DrawMode === "樓高") {
-        let target = e.target
-        let targetId = target.getAttribute('id')
-        let str = targetId.split('_')
-        let inputValue;
-        if (str.length === 3) {
-            inputValue = prompt(`座標(${parseInt(str[2])}, ${parseInt(str[1])})請輸入數值`)
-            targetId = `text_${targetId}`
-        } else {
-            inputValue = prompt(`座標(${parseInt(str[3])}, ${parseInt(str[2])})請輸入數值`)
-        }
-        try {
-            inputValue = inputValue.trim();
-            if (inputValue === "0") {
-                // 移除長方形
-                rectHigh.removeChild(document.getElementById(`${targetId}`))
-                targetId = targetId.substring(5, targetId.length)
-                rect.removeChild(document.getElementById(`${targetId}`))
-            } else if (inputValue === "") {
-                console.log("inputValue")
-            } else {
-                document.querySelector(`#${targetId}`).innerHTML = inputValue
+// rectHigh.addEventListener("click", e => {
+//     console.log(step02DrawMode)
+//     if (step02DrawMode === "樓高") {
+//         let target = e.target
+//         let targetId = target.getAttribute('id')
+//         let str = targetId.split('_')
+//         let inputValue;
+//         let targetCoord
+//         if (str.length === 3) {
+//             inputValue = prompt(`座標(${parseInt(str[1])}, ${parseInt(str[2])})請輸入數值`)
+//             targetId = `text_${targetId}`
+//             targetCoord = `${str[1]},${str[2]}`
+//         } else {
+//             inputValue = prompt(`座標(${parseInt(str[2])}, ${parseInt(str[3])})請輸入數值`)
+//             targetCoord = `${str[2]},${str[3]}`
+//         }
+//         try {
+//             inputValue = inputValue.trim();
+//             if (inputValue === "0") {
+//                 // 移除長方形
+//                 rectHigh.removeChild(document.getElementById(`${targetId}`))
+//                 targetId = targetId.substring(5, targetId.length)
+//                 rect.removeChild(document.getElementById(`${targetId}`))
+//             } else if (inputValue === "") {
+//                 console.log("inputValue")
+//             } else {
+//                 document.querySelector(`#${targetId}`).innerHTML = inputValue
+//                 // 
+//                 fixRectHeight(targetCoord, inputValue)
+//             }
+//         } catch (e) {
+//             console.error(e)
+//         }
+//     }
+// })
+
+// 修改高度
+function fixRectHeight(targetId, inputValue) {
+    const x = Number(targetId.split('_')[0])
+    const y = Number(targetId.split('_')[1])
+    const target = Number(inputValue)
+    let array = scaffoldArray.baseGrid.filter((item) => item.x === x && item.y === y)
+    scaffoldArray.baseGrid = scaffoldArray.baseGrid.filter((item) => item.x !== x || item.y !== y)
+    const size = array.length
+    if (target > size) {
+        // 要多加z欄位
+        let newItem = array.filter((item) => item.z === size)[0]
+        for (i = 0; i < target - size; i ++) {
+            const item = {
+                x:newItem.x,
+                y:newItem.y,
+                z:newItem.z + i + 1,
+                border: [newItem.border[0], newItem.border[1], scaffoldArray.base.height],
+                startCoor: [newItem.startCoor[0], newItem.startCoor[1], newItem.startCoor[2] + newItem.border[2] + i * scaffoldArray.base.height]
             }
-        } catch (e) {
-            console.error(e)
+            array.push(item)
         }
+        array.forEach(el => scaffoldArray.baseGrid.push(el))
+    } else if (target < size) {
+        // 依據z欄位去除
+        array = array.filter((item) => item.z <= target)
+        array.forEach(el => scaffoldArray.baseGrid.push(el))
     }
-})
+}
 
 // 關閉並儲存
 const textDesc = document.getElementById("saveDescText")
@@ -1539,8 +1562,8 @@ saveAddAnchor.addEventListener('click', e => {
 
 const finishAndDownload = document.getElementById('finishAndDownload')
 finishAndDownload.addEventListener('click', e => {
-  const svgData = document.getElementById('svg').outerHTML;
-  convertSvgToDxf(svgData);
+    const svgData = document.getElementById('svg').outerHTML;
+    convertSvgToDxf(svgData);
 })
 
 
