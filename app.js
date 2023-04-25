@@ -1,8 +1,14 @@
-const express = require("express");
-const { engine } = require('express-handlebars')
-const jsdom = require("jsdom");
+import express from "express";
+import { engine } from 'express-handlebars';
+import jsdom from "jsdom";
 const { JSDOM } = jsdom;
-const mariadb = require('mariadb');
+import bodyParser from "body-parser";
+import multer from "multer";
+import { fileURLToPath} from 'url';
+import { dirname, join } from "path";
+import mariadb from 'mariadb';
+
+import {start, stepMake, built, newPage, step01, step02, step03, step04, uploadResult} from './lib/handlers.js';
 
 
 const app = express()
@@ -10,25 +16,31 @@ const PORT = process.env.PORT || '3000'
 app.set('port', PORT);
 
 // set main js 
-const menu = require('./lib/handlers')
+
 // set public filedirect 
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 app.use(express.static(__dirname + '/public'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const upload = multer({ dest: 'uploads/'})
 
 app.engine('handlebars', engine({ extname: '.hbs', defaultLayouts: 'main', }))
 app.set('view engine', 'handlebars')
 app.set('views', './views')
 
-app.get('/', menu.start)
-app.get('/step', menu.stepMake)
-app.get('/built', menu.built)
-app.get('/newpage', menu.newPage)
+app.get('/', start)
+app.get('/step', stepMake)
+app.get('/built', built)
+app.get('/newpage', newPage)
 // 逐步一頁一頁處理
-app.get('/step01', menu.step01)
-app.post('/step02', menu.step02)
-app.post('/step03', menu.step03)
-app.post('/step04', menu.step04)
+app.get('/step01', step01)
+app.post('/step02', step02)
+app.post('/step03', step03)
+app.post('/step04', step04)
 app.post('/convert', (req, res) => {
   // 从请求中获取SVG文件数据
   const svg = req.body.svg;
@@ -55,7 +67,7 @@ app.post('/convert', (req, res) => {
   res.download(filePath);
 });
 
-app.post('/api', menu.uploadResult)
+app.post('/api', uploadResult)
 
 // // 連線資料庫
 // const pool = mariadb.createPool({

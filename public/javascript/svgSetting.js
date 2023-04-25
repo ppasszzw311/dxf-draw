@@ -11,6 +11,10 @@ let scaffoldArray = {
         frontView: [],
         rearView: []
     },
+    role: {
+        acnchor: 1,
+        rung:1
+    },
     height: [],
     baseGrid: [],
     grid: [], stair: [], anchor: [], rung: [], bracing: [],
@@ -47,6 +51,7 @@ function recordBaseinfo() {
     scaffoldArray.base.long = Number(document.querySelector("#item-long").value)
     scaffoldArray.base.width = Number(document.querySelector("#item-width").value)
     scaffoldArray.base.height = Number(document.querySelector("#item-height").value)
+    scaffoldArray.role.acnchor = Number(document.querySelector("#anchor-role").value)
 }
 
 // 進入步驟二畫方格圖
@@ -181,21 +186,11 @@ function createRectangleSvg(coorArray) {
     // 重置所有
     initialStepSvg()
 
-    // 畫邊邊
-    //arrayX.forEach(el => {
-    //    const coorX = parseInt(el.startCoor + step02StartXY.x)
-    //    const shape = descGridText(coorX, step02StartXY.y, el.border, 30, el.id, "X")
-    //    const shapeRect = descGridRect(coorX, 0, el.border, 25, el.id, "X")
-    //    desc.appendChild(shapeRect)
-    //    desc.appendChild(shape)
-    //})
-    //arrayY.forEach(el => {
-    //    const coordY = parseInt(maxY - el.startCoor + step02StartXY.y - el.border)
-    //    const shape = descGridText(step02StartXY.x, coordY, 30, el.border, countY - el.id + 1, "Y")
-    //    const shapeRect = descGridRect(0, coordY, 25, el.border, countY - Number(el.id) + 1, "Y")
-    //    desc.appendChild(shapeRect)
-    //    desc.appendChild(shape)
-    //})
+    // 定義高寬
+    let viewBox = `${0} ${0} ${maxborder.x} ${maxborder.y + 40}`
+    //	設定 SVG viewBox 屬性值
+    svg.setAttribute('viewBox', viewBox)
+    
     // 畫方格
     let newCoordArray = [];
     coorArray.forEach((el) => {
@@ -302,8 +297,6 @@ const anchor = document.getElementById('anchor');
 const stair = document.getElementById('stair')
 const desc = document.getElementById("desc")
 const updrawer = document.querySelector("#updrawer")
-
-
 
 
 /**
@@ -464,9 +457,6 @@ desc.addEventListener('click', e => {
                     baseWidth.x[item].border = Number(value)
                     //fixArrayCoor()
                 } else {
-                    //item = parseInt(id) - 1
-                    //baseWidth.y.find(item => parseInt(item.id) === item ? item.border = Number(value) : item.border)
-                    //baseWidth.y[item].border = Number(value)
 
                     const targetIndex = parseInt(id) 
                     const targetObject = baseWidth.y.find(obj => parseInt(obj.id) === targetIndex);
@@ -477,8 +467,6 @@ desc.addEventListener('click', e => {
                 }
                 // 重置網格
                 drawBaseGrid()
-
-                
             }
         }
     }
@@ -506,9 +494,6 @@ function fixArrayCoor() {
     scaffoldArray.baseGrid = newArr
     createRectangleSvg(scaffoldArray.baseGrid)
 }
-
-
-
 
 /** 畫箭頭 */
 function arrowDesc() {
@@ -775,8 +760,6 @@ function selectModeMouse() {
 
     }
 
-
-
     function clearEventBubble(e) {
         if (e.stopPropagation) e.stopPropagation();
         else e.cancelBubble = true;
@@ -890,19 +873,18 @@ function anchorSelectClose() {
     const stairSelect = document.getElementById("stairSelect")
     const anchorSelect = document.getElementById("anchorSelect")
     const controlBar = document.getElementById("control-bar")
+
     anchorSelect.addEventListener('click', e => {
         const target = e.target
         if (target.innerHTML === "×") {
             // 取得刪除目標
             let targetId = target.parentElement.parentElement.dataset.id
-            stairList = stairList.filter(item => item !== targetId);
             // 取消目標長方形顏色
             let circleTarget = document.getElementById(targetId)
             circleTarget.remove();
             // 取消目標列表內容
             let targetItem = target.parentElement.parentElement.parentElement
             targetItem.remove();
-
         }
         if (stairSelect.childElementCount === 0 && anchorSelect.childElementCount === 0) {
             controlBar.classList.add("selecter-close")
@@ -915,7 +897,7 @@ function anchorSelectClose() {
 const btnResetSvg = document.querySelector("#btnResetSvg")
 btnResetSvg.addEventListener('click', e => {
     e.preventDefault()
-    let viewBox = `${0} ${0} ${maxborder.x} ${maxborder.y}`
+    let viewBox = `${0} ${0} ${maxborder.x} ${maxborder.y + 40}`
     //	設定 SVG viewBox 屬性值
     svg.setAttribute('viewBox', viewBox)
 })
@@ -988,6 +970,7 @@ submit2.addEventListener('click', e => {
     let children = rectHigh.childNodes;
     scaffoldArray.height = []
 
+    // 取得高
     for (i = 0; i < children.length; i++) {
         if (children[i].nodeType === Node.ELEMENT_NODE) {
             let str = children[i].id.split('_')
@@ -1006,12 +989,21 @@ submit2.addEventListener('click', e => {
         }
     }
 
-    // 計算梯位位置
+    // 取得梯位
     recordStair()
-    // 計算錨定點位置
-    recordAnchor()
+    // 取得錨定點
+    const anchorList = document.querySelectorAll('.anchorList');
+    anchorList.forEach(el => {
+        // 取得各節點
+        const arrId = el.firstElementChild.dataset.id;
+        const newID = `${arrId.split('_')[1]}_${arrId.split('_')[2]}`
+        scaffoldArray.anchor.push(newID)
+    })
+  
+    // 建立五視圖
+    buildFiveView()
     // 建立三視圖
-    buildThreeView()
+    //buildThreeView()
 })
 
 // 計算梯位位置
@@ -1023,11 +1015,7 @@ function recordStair() {
             let x = parseInt(str[1])
             let y = parseInt(str[2])
             if (!isNaN(x) && !isNaN(y)) {
-                let item = {
-                    x: parseInt(x),
-                    y: parseInt(y)
-                }
-                scaffoldArray.stair.push(item)
+                scaffoldArray.stair.push(`${x}_${y}`)
             }
         }
     }
@@ -1055,6 +1043,148 @@ function recordAnchor() {
         }
     }
 }
+
+// 取得錨定點高度
+function getAnchorZ(x, y) {
+    const arrHigh = scaffoldArray.height
+    let hight = 0
+    arrHigh.forEach(el => {
+        const item = el.split('_')
+        if (Number(item[0]) === Number(x) && Number(item[1] === Number(y))) {
+            hight = Number(item[2])
+        }
+    })
+
+    let arr = []
+    let count = 0
+    let value = Number(getAnchorRole())
+    while (hight > value - 1) {
+        count += value
+        value -= value
+        arr.push(count)
+    }
+    return arr
+}
+
+// 取得錨定點規則
+function getAnchorRole() {
+    const value = scaffoldArray.role.anchor
+    let answer = 0
+    switch (value) {
+        case 1:
+            answer = 3
+            break;
+        default:
+            answer = 3
+            break;
+    }
+    return answer
+}
+
+// 建立五視圖
+function buildFiveView() {
+    const array = scaffoldArray.baseGrid
+    const xArray = baseWidth.x
+    const yArray = baseWidth.y
+    const zArray = baseWidth.z
+
+    // 取得最大XYZ
+    let max_x = 0 , max_y = 0, max_z = 0
+    xArray.forEach(el => {
+        const value = el.startCoor + el.border
+        if (max_x < value) {
+            max_x = value
+        }
+    })
+    yArray.forEach(el => {
+        const value = el.startCoor + el.border 
+        if (max_y < value) {
+            max_y = value 
+    }})
+    zArray.forEach(el => {
+        const value = el.startCoor + el.border
+        if (max_z < value) {
+            max_z = value
+        }
+    })
+    console.log(max_x, max_y, max_z)
+
+    // 先分別生成
+    // top
+    array.forEach(el => {
+        const start_x = xArray.filter((item) => item.id === el.x)[0].startCoor
+        const start_y = yArray.filter((item) => item.id === el.y)[0].startCoor
+        const border_x = xArray.filter((item) => item.id === el.x)[0].border
+        const border_y = yArray.filter((item) => item.id === el.y)[0].border
+        const item = {
+            id: `${el.x}_${el.y}_${el.z}`,
+            viewId: `${el.x}_${el.y}`,
+            coord: [start_x, start_y],
+            border: [border_x,border_y]
+        }
+        scaffoldArray.fiveViewGrid.topView.push(item)
+    })
+    // left
+    array.forEach(el => {
+        const r_id = yArray.length - el.y + 1
+        const start_y = yArray.filter((item) => item.id === r_id)[0].startCoor
+        const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
+        const border_y = yArray.filter((item) => item.id === r_id)[0].border
+        const border_z = zArray.filter((item) => item.id === el.z)[0].border
+        const item = {
+            id: `${el.x}_${el.y}_${el.z}`,
+            viewId: `${r_id}_${el.z}`,
+            coord: [start_y, start_z],
+            border: [border_y,border_z]
+        }
+        scaffoldArray.fiveViewGrid.leftSideView.push(item)
+    })
+    // front
+    array.forEach(el => {
+        const start_x = xArray.filter((item) => item.id === el.x)[0].startCoor
+        const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
+        const border_x = xArray.filter((item) => item.id === el.x)[0].border
+        const border_z = zArray.filter((item) => item.id === el.z)[0].border
+        const item = {
+            id: `${el.x}_${el.y}_${el.z}`,
+            viewId: `${el.x}_${el.z}`,
+            coord: [start_x, start_z],
+            border: [border_x,border_z]
+        }
+        scaffoldArray.fiveViewGrid.frontView.push(item)
+    }) 
+    // right
+    array.forEach(el => {
+        const start_y = yArray.filter((item) => item.id === el.y)[0].startCoor
+        const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
+        const border_y = yArray.filter((item) => item.id === el.y)[0].border
+        const border_z = zArray.filter((item) => item.id === el.z)[0].border
+        const item = {
+            id: `${el.x}_${el.y}_${el.z}`,
+            viewId: `${el.y}_${el.z}`,
+            coord: [start_y, start_z],
+            border: [border_y,border_z]
+        }
+        scaffoldArray.fiveViewGrid.rightSideView.push(item)
+    })
+    // rear
+    array.forEach(el => {
+        const r_id = xArray.length - el.x + 1
+        const start_x = xArray.filter((item) => item.id === r_id)[0].startCoor
+        const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
+        const border_x = xArray.filter((item) => item.id === r_id)[0].border
+        const border_z = zArray.filter((item) => item.id === el.z)[0].border
+        const item = {
+            id: `${el.x}_${el.y}_${el.z}`,
+            viewId: `${r_id}_${el.z}`,
+            coord: [start_x, start_z],
+            border: [border_x,border_z]
+        }
+        scaffoldArray.fiveViewGrid.rearView.push(item)
+    }) 
+}
+
+
 
 // 指定三視圖位置
 let threeViewBorder = []
@@ -1317,20 +1447,7 @@ function anchorSelectClose3D() {
     })
 }
 
-function getAnchorZ(x, y) {
-    const targetText = `text_rect_${x}_${y}`
-    const target = document.getElementById(targetText)
-    let value = target.innerHTML
-    value = parseInt(value)
-    let arr = []
-    let count = 0
-    while (value > 2) {
-        count += 3
-        value -= 3
-        arr.push(count)
-    }
-    return arr
-}
+
 
 
 // 
@@ -1459,45 +1576,6 @@ backToStep03.addEventListener("click", e => {
     }
 })
 
-// 取得滑鼠滾動
-
-// 取得長方形點part02
-// rectHigh.addEventListener("click", e => {
-//     console.log(step02DrawMode)
-//     if (step02DrawMode === "樓高") {
-//         let target = e.target
-//         let targetId = target.getAttribute('id')
-//         let str = targetId.split('_')
-//         let inputValue;
-//         let targetCoord
-//         if (str.length === 3) {
-//             inputValue = prompt(`座標(${parseInt(str[1])}, ${parseInt(str[2])})請輸入數值`)
-//             targetId = `text_${targetId}`
-//             targetCoord = `${str[1]},${str[2]}`
-//         } else {
-//             inputValue = prompt(`座標(${parseInt(str[2])}, ${parseInt(str[3])})請輸入數值`)
-//             targetCoord = `${str[2]},${str[3]}`
-//         }
-//         try {
-//             inputValue = inputValue.trim();
-//             if (inputValue === "0") {
-//                 // 移除長方形
-//                 rectHigh.removeChild(document.getElementById(`${targetId}`))
-//                 targetId = targetId.substring(5, targetId.length)
-//                 rect.removeChild(document.getElementById(`${targetId}`))
-//             } else if (inputValue === "") {
-//                 console.log("inputValue")
-//             } else {
-//                 document.querySelector(`#${targetId}`).innerHTML = inputValue
-//                 // 
-//                 fixRectHeight(targetCoord, inputValue)
-//             }
-//         } catch (e) {
-//             console.error(e)
-//         }
-//     }
-// })
-
 // 修改高度
 function fixRectHeight(targetId, inputValue) {
     const x = Number(targetId.split('_')[0])
@@ -1566,20 +1644,34 @@ finishAndDownload.addEventListener('click', e => {
     convertSvgToDxf(svgData);
 })
 
+const convertSvgToDxf = async (svgData) => {
+    try {
+      const data = getNewJson();
+      const response = await axios.post('/api', {
+        data: JSON.stringify(data)
+      });
+      const res = response.data;
+      console.log(res)
+      if (res === 'success') {
+        location.href = '/dxfTest.dxf';
+      }
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
-const convertSvgToDxf = (svgData) => {
-    const newJson = getNewJson(scaffoldArray)
-    return axios.post('/api', {
-        data: JSON.stringify(newJson)
-    })
-        .then(response => {
-            const res = response.data
-            if (res === "success") {
-                location.href = "/success.dxf"
-            }
-            console.log(response.data)
-        })
-        .catch(error => {
-            console.error(error);
-        });
-};
+function getNewJson() {
+    const newJson = {
+        fileName: "dxfTest",
+        base: scaffoldArray.base,
+        role: scaffoldArray.role,
+        fiveViewGrid: scaffoldArray.fiveViewGrid,
+        height: scaffoldArray.height,
+        stair: scaffoldArray.stair,
+        anchor: scaffoldArray.anchor
+    }
+    console.log(newJson)
+    return newJson
+  }
