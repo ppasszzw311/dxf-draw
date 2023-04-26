@@ -30,7 +30,8 @@ let baseWidth = {
 // 定義最大座標
 let maxborder = {
     x: 0,
-    y: 0
+    y: 0,
+    z: 0
 }
 // 定義模式
 let step02DrawMode = "";
@@ -631,11 +632,6 @@ function selectModeMouse() {
             selDiv.style.display = 'none';
             stairSelectClose();
 
-        // if (dblclickEvent.classList.contains('dblclick')) {
-            
-        // }
-
-
     }
 
     function onMouseMoveMode(e) {
@@ -649,9 +645,6 @@ function selectModeMouse() {
             selDiv.style.top = Math.min(_y, startY) + 'px';
             selDiv.style.width = Math.abs(_x - startX) + 'px';
             selDiv.style.height = Math.abs(_y - startY) + 'px';
-        // if (dblclickEvent.classList.contains('dblclick')) {
-            
-        // }
     }
 
     function onMouseDownMode(e) {
@@ -666,9 +659,6 @@ function selectModeMouse() {
             document.body.appendChild(selDiv);
             selDiv.style.left = startX + 'px';
             selDiv.style.top = startY + 'px';
-        // mouseStopId = setTimeout(function () {
-            
-        // }, 300);
     }
 
     function onMouseUpModeAnchor(e) {
@@ -1107,33 +1097,40 @@ function getAnchorRole() {
     return answer
 }
 
+const maxWidth = {
+    x: 0,
+    y: 0,
+    z: 0
+}
+
 // 建立五視圖
 function buildFiveView() {
     const array = scaffoldArray.baseGrid
     const xArray = baseWidth.x
     const yArray = baseWidth.y
     const zArray = baseWidth.z
+    const scaling = scaffoldArray.base.scaling
+    let startPoint = []
 
     // 取得最大XYZ
-    let max_x = 0 , max_y = 0, max_z = 0
     xArray.forEach(el => {
         const value = el.startCoor + el.border
-        if (max_x < value) {
-            max_x = value
+        if (maxWidth.x < value) {
+            maxWidth.x = Number(value)
         }
     })
     yArray.forEach(el => {
         const value = el.startCoor + el.border 
-        if (max_y < value) {
-            max_y = value 
+        if (maxWidth.y < value) {
+            maxWidth.y = Number(value) 
     }})
     zArray.forEach(el => {
         const value = el.startCoor + el.border
-        if (max_z < value) {
-            max_z = value
+        if (maxWidth.z < value) {
+            maxWidth.z = Number(value)
         }
     })
-    console.log(max_x, max_y, max_z)
+    console.log(maxWidth.x, maxWidth.y, maxWidth.z)
 
     // 先分別生成
     // top
@@ -1150,9 +1147,13 @@ function buildFiveView() {
         }
         scaffoldArray.fiveViewGrid.topView.push(item)
     })
+    startPoint = [40 + (maxWidth.y * scaling) + 60, 40 + (maxWidth.y * scaling) ]
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.topView, 'topView')  
+    makRectText(startPoint, scaffoldArray.fiveViewGrid.topView)
+    makStairTop(startPoint, scaffoldArray.fiveViewGrid.topView)
     // left
     array.forEach(el => {
-        const r_id = yArray.length - el.y + 1
+        const r_id = parseInt(yArray.length - el.y + 1)
         const start_y = yArray.filter((item) => item.id === r_id)[0].startCoor
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
         const border_y = yArray.filter((item) => item.id === r_id)[0].border
@@ -1165,6 +1166,11 @@ function buildFiveView() {
         }
         scaffoldArray.fiveViewGrid.leftSideView.push(item)
     })
+    // 新增
+    startPoint = [40, 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView') 
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.leftSideView)
+
     // front
     array.forEach(el => {
         const start_x = xArray.filter((item) => item.id === el.x)[0].startCoor
@@ -1178,7 +1184,10 @@ function buildFiveView() {
             border: [border_x,border_z]
         }
         scaffoldArray.fiveViewGrid.frontView.push(item)
-    }) 
+    })
+    startPoint = [40 + (maxWidth.y * scaling) + 60, 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.frontView)  
     // right
     array.forEach(el => {
         const start_y = yArray.filter((item) => item.id === el.y)[0].startCoor
@@ -1193,6 +1202,9 @@ function buildFiveView() {
         }
         scaffoldArray.fiveViewGrid.rightSideView.push(item)
     })
+    startPoint = [40 + (maxWidth.y * scaling) + 120 + (maxWidth.x * scaling), 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')  
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.rightSideView)
     // rear
     array.forEach(el => {
         const r_id = xArray.length - el.x + 1
@@ -1208,9 +1220,152 @@ function buildFiveView() {
         }
         scaffoldArray.fiveViewGrid.rearView.push(item)
     }) 
+    startPoint = [40 + (maxWidth.y * 2 * scaling) + 180 + (maxWidth.x * scaling), 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView')  
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.rearView)
+
+    let newWidth = ((maxWidth.x * 2) + (maxWidth.y * 2)) * scaling
+    let newHigh = (maxWidth.y + maxWidth.z) * scaling
+    let viewBox = `${0} ${0} ${newWidth} ${newHigh}`
+    //	設定 SVG viewBox 屬性值
+    const svg3 = document.getElementById("step03Svg");
+    svg3.setAttribute('viewBox', viewBox)
+
 }
 
+// 定義立面圖
+function makRectangle(start, grid, target) {
+    const scaling = scaffoldArray.base.scaling
+    const goal = document.getElementById(target)
+    grid.forEach(el => {
+        const width = el.border[0] * scaling
+        const height = el.border[1] * scaling
+        const x = start[0] + el.coord[0] * scaling
+        const y = start[1] - ( el.coord[1] + el.border[1] ) * scaling
+        // drawing.drawRect(x, y, x + width, y + long)
+        const shape = rectangle(x, y, width, height, id)
+        goal.appendChild(shape)
+    })
+}
 
+// 建立五視樓高
+function makRectText(start, grid) {
+    const scaling = scaffoldArray.base.scaling
+    const topView = document.getElementById("topViewText")
+    grid.forEach(el => {
+        const viewId = `${el.viewId.split('_')[0]}_${el.viewId.split('_')[1]}`
+        let topIdArr = scaffoldArray.height
+        topIdArr = topIdArr.map(item => `${item.split('_')[0]}_${item.split('_')[1]}`)
+        for (let i = 0; i < topIdArr.length; i++) {
+            if (topIdArr[i] === viewId) {
+                const width = el.border[0] * scaling
+                const long = el.border[1] * scaling
+                const x = start[0] + el.coord[0] * scaling
+                const y = start[1] - (el.coord[1] + el.border[1]) * scaling
+                const text = scaffoldArray.height[i].split('_')[2]
+                const shape = rectangleText(x, y, width, long, `rect_${topIdArr[i]}`, text)
+                topView.appendChild(shape)
+            }
+        }
+    })
+}
+
+// 建立平面底格文字
+function rectangleText(x, y, width, height, id, value) {
+    // 校正
+    let newX = x + (width / 2)
+    let newY = y + (height / 2)
+    var svgns = "http://www.w3.org/2000/svg";
+    var shape = document.createElementNS(svgns, "text");
+    shape.setAttributeNS(null, "id", `text_${id}` )
+    shape.setAttributeNS(null, "x", newX);
+    shape.setAttributeNS(null, "y", newY); //width="150" height="150"
+    shape.setAttributeNS(null, "dominant-baseline", "middle");
+    shape.setAttributeNS(null, "text-anchor", "middle");
+    shape.setAttributeNS(null, 'font-size', '15');
+    shape.innerHTML = value;
+    return shape
+}
+
+// 建立梯位
+function makStairTop(start, grid) {
+    const scaling = scaffoldArray.base.scaling
+    const stairArray = scaffoldArray.stair
+    grid.forEach(el => {
+        const id = el.id
+        for (let i = 0; i < stairArray.length; i++) {
+            if (stairArray[i] === id) {
+                const x = start[0] + el.coord[0] * scaling
+                const y = start[1] - (el.coord[1] + el.border[1]) * scaling
+                const stairWidth = el.border[0] / 4 * scaling
+                const stairLong = el.border[1] / 5 * scaling
+                makeFiveTopStair(x, y, x + stairWidth, y + el.border[1] * scaling, "y", `stiar_${stairArray[i]}`)
+            }
+        }
+
+    })
+}
+
+// 建立階梯
+function makeFiveTopStair(x1, y1, x2, y2, rotate, id) {
+    // 建立一個group
+    const topViewStair = document.getElementById("topViewStair")
+    const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    childGroup.setAttribute('id', id);
+    // 将子元素添加为父元素的子元素
+    topViewStair.appendChild(childGroup);
+    // 確認方向
+    if (rotate === "x") {
+        // 橫向
+        line(x1, x2, y1, y1, id)
+        for (i = 0; i < 5; i++) {
+            line(x1+ (i * (x2-x1) / 5), x1+ (i * (x2-x1) / 5), y1, y2, id)
+        }
+        line(x1, x2 , y2, y2, id)
+    } else {
+        // 直向
+        line(x1 , x1, y2, y1, id)
+        for (i = 0; i < 5; i++) {
+            line(x1, x2, y2 + (i * (y1 - y2) / 5), y2 + (i * (y1 - y2) / 5), id)
+        }
+        line(x2, x2, y2, y1, id)
+    }
+}
+
+// 建立梯位 直面圖
+function makStairStand(start, grid) {
+    const scaling = scaffoldArray.base.scaling
+    const stairArray = scaffoldArray.stair
+    grid.forEach(el => {
+        const id = el.id
+        for (let i = 0; i < stairArray.length; i++) {
+            if (stairArray[i] === id) {
+                const x1 = start[0] + el.coord[0] * scaling
+                const y1 = start[1] - el.coord[1] * scaling
+                const x2 = x1 + el.border[0] * scaling
+                const y2 = y1 - el.border[1] * scaling
+                const step = el.border[1] * scaling / 5
+                const width = el.border[0] * scaling
+                drawStairStand(x1, x2, y1, y2, step, width, id)
+            }
+        }
+
+    })
+}
+// 建立立面階梯
+function drawStairStand(x1, x2, y1, y2, step, width, id) {
+    // 建立一個group
+    const topViewStair = document.getElementById("topViewStair")
+    const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    childGroup.setAttribute('id', id);
+    // 将子元素添加为父元素的子元素
+    topViewStair.appendChild(childGroup);
+    line(x1, x2, y2, y1, id)
+    line(x1 + width / 5 - width / 10, x1 + width / 5 + width / 10, y1 + step, y1 + step, id)
+    line(x1 + width / 5 * 2 - width / 10, x1 + width / 5 * 2 + width / 10, y2 + step * 2, y2 + step * 2, id)
+    line(x1 + width / 5 * 3 - width / 10, x1 + width / 5 * 3 + width / 10, y2 + step * 3, y2 + step * 3, id)
+    line(x1 + width / 5 * 4 - width / 10, x1 + width / 5 * 4 + width / 10, y2 + step * 4, y2 + step * 4, id)    
+}
 
 // 指定三視圖位置
 let threeViewBorder = []
@@ -1479,6 +1634,7 @@ function anchorSelectClose3D() {
 // 
 const selectView = document.getElementById("selectMode2")
 selectView.addEventListener('change', e => {
+    const scaling = scaffoldArray.base.scaling
     let selectViewValue;
     selectViewValue = document.querySelector('input[name="inputMode"]:checked').value
     const alert = document.querySelector(".alert")
@@ -1490,15 +1646,15 @@ selectView.addEventListener('change', e => {
     }, 1000)
     if (typeof selectViewValue !== "undefined") {
         if (selectViewValue.includes("平面圖")) {
-            resetViewBox(threeViewCoord.y + 50, 0, threeViewCoord.x, threeViewCoord.y, "step03Svg")
+            resetViewBox(maxWidth.y * scaling + 50, 0, maxWidth.x * scaling, maxWidth.y * scaling, "step03Svg")
         } else if (selectViewValue.includes("左側視圖")) {
-            resetViewBox(0, threeViewCoord.y + 100, threeViewCoord.y, threeViewCoord.z + 60, "step03Svg")
+            resetViewBox(0, maxWidth.y * scaling + 100, maxWidth.y * scaling, maxWidth.z * scaling + 60, "step03Svg")
         } else if (selectViewValue.includes("正面圖")) {
-            resetViewBox(100 + threeViewCoord.y, threeViewCoord.y + 100, threeViewCoord.x, threeViewCoord.z + 60, "step03Svg")
+            resetViewBox(100 + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.x * scaling, maxWidth.z * scaling + 60, "step03Svg")
         } else if (selectViewValue.includes("右側視圖")) {
-            resetViewBox(150 + threeViewCoord.x + threeViewCoord.y, threeViewCoord.y + 100, threeViewCoord.y, threeViewCoord.z + 60, "step03Svg")
+            resetViewBox(150 + maxWidth.x * scaling + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.y * scaling, maxborder.z * scaling + 60, "step03Svg")
         } else if (selectViewValue.includes("後視圖")) {
-            resetViewBox(200 + threeViewCoord.x + threeViewCoord.y * 2, threeViewCoord.y + 100, threeViewCoord.x, threeViewCoord.z + 60, "step03Svg")
+            resetViewBox(200 + maxWidth.x * scaling + maxWidth.y * scaling * 2, maxWidth.y * scaling + 100, maxWidth.x * scaling, maxWidth.z * scaling + 60, "step03Svg")
         }
     }
 })
