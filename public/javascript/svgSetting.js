@@ -987,6 +987,7 @@ submit2.addEventListener('click', e => {
                 scaffoldArray.grid.push(item)
             }
         }
+        console.log(`處理${i}`)
     }
 
     // 取得梯位
@@ -996,8 +997,15 @@ submit2.addEventListener('click', e => {
     anchorList.forEach(el => {
         // 取得各節點
         const arrId = el.firstElementChild.dataset.id;
-        const newID = `${arrId.split('_')[1]}_${arrId.split('_')[2]}`
-        scaffoldArray.anchor.push(newID)
+        const x = Number(arrId.split('_')[1])
+        const y = Number(arrId.split('_')[2])
+        const anchorZ = getAnchorZ(x, y) // 之後要改
+        console.log(anchorZ)
+        anchorZ.forEach(el => {
+            const newID = `${x}_${y}_${el}`
+            scaffoldArray.anchor.push(newID)
+            // 之後棄用
+        })
     })
   
     // 建立五視圖
@@ -1015,11 +1023,29 @@ function recordStair() {
             let x = parseInt(str[1])
             let y = parseInt(str[2])
             if (!isNaN(x) && !isNaN(y)) {
-                scaffoldArray.stair.push(`${x}_${y}`)
+                const z = getStairHeight(x, y)
+                for (let i = 0; i < z; i ++) {
+                    scaffoldArray.stair.push(`${x}_${y}_${i+1}`)
+                }
+                
             }
         }
     }
 }
+// 取得樓高
+function getStairHeight(x, y) {
+    const arrHigh = scaffoldArray.height
+    let hight = 0
+    arrHigh.forEach(el => {
+        const item = el.split('_')
+        console.log(`設定的item${item[0]}, ${x}, ${y}`)
+        if (Number(item[0]) == x && Number(item[1] == y)) {
+            hight = Number(item[2])
+        }
+    })
+    return hight
+}
+
 // 計算錨定點位置
 function recordAnchor() {
     const children = anchor.childNodes;
@@ -1050,7 +1076,8 @@ function getAnchorZ(x, y) {
     let hight = 0
     arrHigh.forEach(el => {
         const item = el.split('_')
-        if (Number(item[0]) === Number(x) && Number(item[1] === Number(y))) {
+        console.log(`設定的item${item[0]}, ${x}, ${y}`)
+        if (Number(item[0]) == x && Number(item[1] == y)) {
             hight = Number(item[2])
         }
     })
@@ -1060,7 +1087,8 @@ function getAnchorZ(x, y) {
     let value = Number(getAnchorRole())
     while (hight > value - 1) {
         count += value
-        value -= value
+        hight -= value
+        console.log(`設定的位置${count}`)
         arr.push(count)
     }
     return arr
