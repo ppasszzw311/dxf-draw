@@ -1025,7 +1025,7 @@ function recordStair() {
             if (!isNaN(x) && !isNaN(y)) {
                 const z = getStairHeight(x, y)
                 for (let i = 0; i < z; i ++) {
-                    scaffoldArray.stair.push(`${x}_${y}_${i+1}`)  
+                    scaffoldArray.stair.push(`${x}_${y}_${i+1}`)   
                 }
             }
         }
@@ -1075,7 +1075,6 @@ function getAnchorZ(x, y) {
     let hight = 0
     arrHigh.forEach(el => {
         const item = el.split('_')
-        console.log(`設定的item${item[0]}, ${x}, ${y}`)
         if (Number(item[0]) == x && Number(item[1] == y)) {
             hight = Number(item[2])
         }
