@@ -1025,9 +1025,8 @@ function recordStair() {
             if (!isNaN(x) && !isNaN(y)) {
                 const z = getStairHeight(x, y)
                 for (let i = 0; i < z; i ++) {
-                    scaffoldArray.stair.push(`${x}_${y}_${i+1}`)
+                    scaffoldArray.stair.push(`${x}_${y}_${i+1}`)  
                 }
-                
             }
         }
     }
