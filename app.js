@@ -3,7 +3,6 @@ import { engine } from 'express-handlebars';
 import jsdom from "jsdom";
 const { JSDOM } = jsdom;
 import bodyParser from "body-parser";
-import multer from "multer";
 import { fileURLToPath} from 'url';
 import { dirname, join } from "path";
 import mariadb from 'mariadb';
@@ -26,7 +25,6 @@ app.use(express.static(__dirname + '/public'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const upload = multer({ dest: 'uploads/'})
 
 app.engine('handlebars', engine({ extname: '.hbs', defaultLayouts: 'main', }))
 app.set('view engine', 'handlebars')
