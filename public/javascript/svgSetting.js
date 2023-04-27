@@ -1170,6 +1170,8 @@ function buildFiveView() {
     startPoint = [40, 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
     makRectangle(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView') 
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.leftSideView)
+    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView')
+    makRung(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView')  
 
     // front
     array.forEach(el => {
@@ -1187,7 +1189,9 @@ function buildFiveView() {
     })
     startPoint = [40 + (maxWidth.y * scaling) + 60, 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
     makRectangle(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')
-    makStairStand(startPoint, scaffoldArray.fiveViewGrid.frontView)  
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.frontView)
+    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')  
+    makRung(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView') 
     // right
     array.forEach(el => {
         const start_y = yArray.filter((item) => item.id === el.y)[0].startCoor
@@ -1205,6 +1209,8 @@ function buildFiveView() {
     startPoint = [40 + (maxWidth.y * scaling) + 120 + (maxWidth.x * scaling), 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
     makRectangle(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')  
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.rightSideView)
+    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView') 
+    makRung(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')
     // rear
     array.forEach(el => {
         const r_id = xArray.length - el.x + 1
@@ -1223,6 +1229,8 @@ function buildFiveView() {
     startPoint = [40 + (maxWidth.y * 2 * scaling) + 180 + (maxWidth.x * scaling), 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
     makRectangle(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView')  
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.rearView)
+    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView') 
+    makRung(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView') 
 
     let newWidth = ((maxWidth.x * 2) + (maxWidth.y * 2)) * scaling
     let newHigh = (maxWidth.y + maxWidth.z) * scaling
@@ -1366,6 +1374,100 @@ function drawStairStand(x1, x2, y1, y2, step, width, id) {
     line(x1 + width / 5 * 3 - width / 10, x1 + width / 5 * 3 + width / 10, y2 + step * 3, y2 + step * 3, id)
     line(x1 + width / 5 * 4 - width / 10, x1 + width / 5 * 4 + width / 10, y2 + step * 4, y2 + step * 4, id)    
 }
+
+// 建立斜撐
+function makDiagonalBraces(start, grid, target) {
+    const scaling = scaffoldArray.base.scaling
+    // 建立一個group
+    const diagonalBraces = document.getElementById(target)
+    const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    childGroup.setAttribute('id', `${target}_makDiagonalBraces`);
+    diagonalBraces.appendChild(childGroup)
+    try {
+      //需要左右對稱，先取得總共寬數
+      let max = 0
+      grid.forEach(el => {
+        const x = Number(el.viewId.split('_')[0])
+        max = max > x ? max : x
+      })
+      const braceArray = paintSymmetricCells(max)
+  
+      grid.forEach(el => {
+        const Id_x = parseInt(el.viewId.split('_')[0])
+        const x1 = start[0] + el.coord[0] * scaling
+        const x2 = x1 + el.border[0] * scaling
+        const y1 = start[1] - el.coord[1] * scaling
+        const y2 = y1 - el.border[1] * scaling
+        if (Id_x > max / 2 && braceArray[Id_x - 1]) {
+            const id = el.viewId
+            line(x1, x2, y2, y1, `${target}_makDiagonalBraces`)
+        } else if (Id_x <= max / 2 && braceArray[Id_x - 1]) {
+            line(x1, x2, y1, y2, `${target}_makDiagonalBraces`)
+        }
+      })
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
+
+// 判斷間隔格子
+function paintSymmetricCells(max) {
+    let painted = Array(max).fill(false);
+  
+    // 計算中心點
+    const center = Math.floor(max / 2);
+  
+    // 如果格子數量是偶數，則在中心點兩邊同時塗色，保持對稱
+    if (max % 2 === 0) {
+      for (let i = 0; i <= center; i += 2) {
+        painted[i] = true;
+        painted[max - 1 - i] = true;
+      }
+    } else {
+      // 如果格子數量是奇數，從中心點開始向兩邊塗色，保持對稱
+      for (let i = 0; i <= center; i += 2) {
+        painted[center - i] = true;
+        painted[center + i] = true;
+      }
+    }
+  
+    return painted;
+  }  
+
+  // 建立橫檔
+function makRung(start, grid, target) {
+    let rungArray = getrungValue(rungRule)
+    const scaling = scaffoldArray.base.scaling;
+    const rung = document.getElementById(target)
+    const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    childGroup.setAttribute('id', `${target}_rung`);
+    rung.appendChild(childGroup)
+    grid.forEach(el => {
+      const x1 = start[0] + el.coord[0] * scaling
+      const x2 = x1 + el.border[0] * scaling
+      for (let i = 0; i < rungArray.length; i++) {
+        const y1 = start[1] - (el.coord[1] + rungArray[i]) * scaling
+        line(x1, x2, y2, y1, )
+        drawing.drawLine(x1, y1, x2, y1,`${target}_rung`)
+      }
+    })
+  }
+  
+  // 取得橫桿規則
+  function getrungValue(value) {
+    switch (value) {
+      case 1:
+        return [0.45]
+        break;
+      case 2:
+        return [0.45, 0.9]
+        break;
+      case 3:
+        return [0.45, 0.9, 1.35]
+        break;
+    }
+  }
 
 // 指定三視圖位置
 let threeViewBorder = []
