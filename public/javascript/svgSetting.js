@@ -124,7 +124,6 @@ function drawBaseGrid() {
     baseWidth.y.forEach(el => {
         yMax += el.border
     })
-    console.log(yMax)
     let x = 0
     baseWidth.x.forEach(el => {
         y = yMax
@@ -373,7 +372,6 @@ function makeStair(x, y, long, width, rotate) {
     const startY = Number(item.getAttribute('y'))
     const borderX = Number(item.getAttribute('width'))
     const borderY = Number(item.getAttribute('height'))
-    console.log(startX, startY, borderX, borderY)
 
     // 確認方向
     // 直向
@@ -602,7 +600,6 @@ function selectModeMouse() {
         if (svgContainer.classList.contains('clicked')) {
             svgContainer.classList.remove('clicked');
             svgContainer.classList.add('dblclick')
-            console.log("hello")
             mouseStopId = setTimeout(function () {
                 mouseOn = true;
                 startX = e.clientX;
@@ -639,8 +636,6 @@ function selectModeMouse() {
             var t = selDiv.offsetTop;
             var w = selDiv.offsetWidth;
             var h = selDiv.offsetHeight;
-            console.log(fileDivs.length)
-            console.log(l, t, w, h, "選擇區塊高")
             for (var i = 0; i < fileDivs.length; i++) {
                 var sl = fileDivs[i].offsetWidth + fileDivs[i].offsetLeft;
                 var st = fileDivs[i].offsetHeight + fileDivs[i].offsetTop;
@@ -653,8 +648,6 @@ function selectModeMouse() {
                     fileDivs[i].classList.add('select-stair')
                 }
             }
-            // 打印被选中DOM元素
-            console.log(selectedEls);
             // ===============選擇梯位===================== 確認儲存
             // 恢复参数
             selDiv.style.display = 'none';
@@ -712,7 +705,6 @@ function selectModeMouse() {
                     let anchorId = `anchor_${fileDivs[i].id.split('_')[1]}_${fileDivs[i].id.split('_')[2]}`
                     try {
                         let anchorItem = document.getElementById(anchorId)
-                        console.log(anchorItem.id)
                     } catch (e) {
                         const shape = circle(fileDivs[i].getAttribute('x'), fileDivs[i].getAttribute('y'), anchorId)
                         anchor.appendChild(shape);
@@ -724,8 +716,6 @@ function selectModeMouse() {
                     //fileDivs[i].classList.add('select-stair')
                 }
             }
-            // 打印被选中DOM元素
-            console.log(selectedEls);
             // ===============選擇梯位===================== 確認儲存
             // 恢复参数
             selDiv.style.display = 'none';
@@ -753,8 +743,6 @@ function selectModeMouse() {
             var t = selDiv.offsetTop;
             var w = selDiv.offsetWidth;
             var h = selDiv.offsetHeight;
-            console.log(fileDivs.length)
-            console.log(l, t, w, h, "選擇區塊高")
             for (var i = 0; i < fileDivs.length; i++) {
                 var sl = fileDivs[i].offsetWidth + fileDivs[i].offsetLeft;
                 var st = fileDivs[i].offsetHeight + fileDivs[i].offsetTop;
@@ -769,7 +757,6 @@ function selectModeMouse() {
             // 打印被选中DOM元素
             selDiv.style.display = 'none';
 
-            console.log(selectedEls);
 
             // ===============選擇梯位===================== 確認儲存
             // 恢复参数
@@ -819,7 +806,6 @@ function makeStairtags(id) {
 
     if (stairSelect.childElementCount > 0) {
         controlBar.classList.remove("selecter-close");
-        console.log(stairSelect.childElementCount);
     }
 }
 
@@ -1018,7 +1004,6 @@ submit2.addEventListener('click', e => {
         const x = Number(arrId.split('_')[1])
         const y = Number(arrId.split('_')[2])
         const anchorZ = getAnchorZ(x, y) // 之後要改
-        console.log(anchorZ)
         anchorZ.forEach(el => {
             const newID = `${x}_${y}_${el}`
             scaffoldArray.anchor.push(newID)
@@ -1055,7 +1040,6 @@ function getStairHeight(x, y) {
     let hight = 0
     arrHigh.forEach(el => {
         const item = el.split('_')
-        console.log(`設定的item${item[0]}, ${x}, ${y}`)
         if (Number(item[0]) == x && Number(item[1] == y)) {
             hight = Number(item[2])
         }
@@ -1104,7 +1088,6 @@ function getAnchorZ(x, y) {
     while (hight > value - 1) {
         count += value
         hight -= value
-        console.log(`設定的位置${count}`)
         arr.push(count)
     }
     return arr
@@ -1158,7 +1141,6 @@ function buildFiveView() {
             maxWidth.z = Number(value)
         }
     })
-    console.log(maxWidth.x, maxWidth.y, maxWidth.z)
 
     // 先分別生成
     // top
@@ -1185,6 +1167,7 @@ function buildFiveView() {
     // 重置
     scaffoldArray.fiveViewGrid.leftSideView = []
     array.forEach(el => {
+        console.log(el)
         const r_id = parseInt(yArray.length - el.y + 1)
         const start_y = yArray.filter((item) => item.id === r_id)[0].startCoor
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
@@ -1462,7 +1445,6 @@ function makDiagonalBraces(start, grid, target) {
         }
       })
     } catch (error) {
-        console.log(error)
     }
   }
 
@@ -1587,7 +1569,6 @@ function createAnchorPoint() {
         const rightId = `rightSideView_rect_${y}_${z}`
         const frontId = `frontView_rect_${x}_${z}`
         const rearId = `rearView_rect_${max[0] - x + 1}_${z}`
-        console.log(topId)
         addAnchorPoint(topId, 'topView')
         addAnchorPoint(leftId, 'leftSideView')
         addAnchorPoint(frontId, 'frontView')
@@ -1631,7 +1612,6 @@ function getAnchorArray(xyArr) {
         // topView
         circleX = topViewAnchor.x + (el.x - 1) * itemValue.itemX
         circleY = topViewAnchor.y - (el.y) * itemValue.itemY
-        console.log(threeViewCount.z, el.z)
         anchorId = `anchor_topView_${el.x}_${el.y}_${el.z}`
         let shapeT = circle(circleX, circleY, anchorId)
         target.appendChild(shapeT);
@@ -1746,15 +1726,15 @@ selectView.addEventListener('change', e => {
     }, 1000)
     if (typeof selectViewValue !== "undefined") {
         if (selectViewValue.includes("平面圖")) {
-            resetViewBox(maxWidth.y * scaling + 50, 0, maxWidth.x * scaling, maxWidth.y * scaling, "step03Svg")
+            resetViewBox(maxWidth.y * scaling + 50, 0, maxWidth.x * scaling, maxWidth.y * scaling + 70, "step03Svg")
         } else if (selectViewValue.includes("左側視圖")) {
-            resetViewBox(0, maxWidth.y * scaling + 100, maxWidth.y * scaling, maxWidth.z * scaling + 60, "step03Svg")
+            resetViewBox(0, maxWidth.y * scaling + 100, maxWidth.y * scaling + 80, maxWidth.z * scaling + 130, "step03Svg")
         } else if (selectViewValue.includes("正面圖")) {
-            resetViewBox(100 + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.x * scaling, maxWidth.z * scaling + 60, "step03Svg")
+            resetViewBox(100 + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.x * scaling + 80, maxWidth.z * scaling + 130, "step03Svg")
         } else if (selectViewValue.includes("右側視圖")) {
-            resetViewBox(150 + maxWidth.x * scaling + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.y * scaling, maxborder.z * scaling + 60, "step03Svg")
+            resetViewBox(150 + maxWidth.x * scaling + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.y * scaling + 80 , maxWidth.z * scaling + 130, "step03Svg")
         } else if (selectViewValue.includes("後視圖")) {
-            resetViewBox(200 + maxWidth.x * scaling + maxWidth.y * scaling * 2, maxWidth.y * scaling + 100, maxWidth.x * scaling, maxWidth.z * scaling + 60, "step03Svg")
+            resetViewBox(200 + maxWidth.x * scaling + maxWidth.y * scaling * 2, maxWidth.y * scaling + 100, maxWidth.x * scaling + 80, maxWidth.z * scaling + 130, "step03Svg")
         }
     }
 })
@@ -1769,7 +1749,6 @@ function resetViewBox(x1, y1, maxborderX, maxborderY, target) {
 
 // 建立正面立圖
 function buildStant(arr) {
-    console.log(maxborder)
     let x = 30
     let y = maxborder.y + 140
     // 找出最大x, z
@@ -1867,6 +1846,7 @@ function fixRectHeight(targetId, inputValue) {
     if (target > size) {
         // 要多加z欄位
         let newItem = array.filter((item) => item.z === size)[0]
+        const length = baseWidth.z.length
         for (i = 0; i < target - size; i ++) {
             const item = {
                 x:newItem.x,
@@ -1876,8 +1856,22 @@ function fixRectHeight(targetId, inputValue) {
                 startCoor: [newItem.startCoor[0], newItem.startCoor[1], newItem.startCoor[2] + newItem.border[2] + i * scaffoldArray.base.height]
             }
             array.push(item)
+
+            // 判定是否需要另外加
+            const zLength = Number(newItem.z + i + 1)
+            const baseZ = Number(baseWidth.z[baseWidth.z.length - 1].id)
+            if (zLength > baseZ) {
+                const baseZArray = {
+                    id: Number(length + i + 1),
+                    startCoor: baseWidth.z[length - 1].startCoor + baseWidth.z[length - 1].border + i * scaffoldArray.base.height,
+                    border: scaffoldArray.base.height
+                }
+                baseWidth.z.push(baseZArray)
+            }
         }
         array.forEach(el => scaffoldArray.baseGrid.push(el))
+        // 增加base width
+
     } else if (target < size) {
         // 依據z欄位去除
         array = array.filter((item) => item.z <= target)
@@ -1892,7 +1886,6 @@ textDesc.addEventListener('click', e => {
     const text = document.getElementById("descText").value
     if (text.length > 0) {
         scaffoldArray.description = text
-        console.log(text)
     }
     $("#exampleModal").modal('hide')
 })
@@ -1905,10 +1898,8 @@ saveAddAnchor.addEventListener('click', e => {
     const addAnchorInfoY = document.getElementById("addAnchorInfoY").value
     const addAnchorInfoZ = document.getElementById("addAnchorInfoZ").value
     if (addAnchorInfoX === "" && addAnchorInfoY === "" && addAnchorInfoZ === "") {
-        console.log("str是空字串");
     } else {
         scaffoldArray.anchorPoint.push({ x: parseInt(addAnchorInfoX), y: parseInt(addAnchorInfoY), z: parseInt(addAnchorInfoZ) })
-        console.log(xyArray)
         getAnchorArray(xyArray)
     }
     $("#addAnchorModal").modal('hide')
@@ -1931,13 +1922,10 @@ const convertSvgToDxf = async (svgData) => {
         data: JSON.stringify(data)
       });
       const res = response.data;
-      console.log(res)
       if (res === 'success') {
         location.href = '/dxfTest.dxf';
       }
-      console.log(response.data);
     } catch (error) {
-      console.error(error);
     }
   };
   
@@ -1952,6 +1940,5 @@ function getNewJson() {
         stair: scaffoldArray.stair,
         anchor: scaffoldArray.anchor
     }
-    console.log(newJson)
     return newJson
   }
