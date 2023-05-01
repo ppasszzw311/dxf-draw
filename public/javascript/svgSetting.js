@@ -233,15 +233,24 @@ function createDescText(coorX, coorY, width, long, id) {
         // 新增一個
         const shape = descGridText(coorX, 0, width,25, id.split('_')[1], "X")
         const shapeRect = descGridRect(coorX, 0, width,25, id.split('_')[1], "X")
-        desc.appendChild(shapeRect)
-        desc.appendChild(shape)
+        if (shapeRect !== null) {
+            desc.appendChild(shapeRect)
+        }
+        if (shape !== null) {
+            desc.appendChild(shape)
+        }
     }
     if (!coordY) {
         // 新增一個
         const shape = descGridText(0, coorY, 25, long, id.split('_')[2], "Y")
         const shapeRect = descGridRect(0, coorY, 25, long, id.split('_')[2], "Y")
-        desc.appendChild(shapeRect)
-        desc.appendChild(shape)
+
+        if (shapeRect !== null) {
+            desc.appendChild(shapeRect)
+        }
+        if (shape !== null) {
+            desc.appendChild(shape)
+        }
     }
 }
 
@@ -358,30 +367,30 @@ function makeStair(x, y, long, width, rotate) {
     stair.appendChild(childGroup);
 
     // 取得該網格的起始值跟寬度
-    const array = scaffoldArray.baseGrid.filter((item) => item.x === Number(x) && item.y === Number(y))[0]
-    const startX = array.startCoor[0]
-    const startY = array.startCoor[1]
-    const borderX = array.border[0]
-    const borderY = array.border[1]
+    const targetId = `rect_${x}_${y}`
+    const item = document.getElementById(targetId)
+    const startX = Number(item.getAttribute('x'))
+    const startY = Number(item.getAttribute('y'))
+    const borderX = Number(item.getAttribute('width'))
+    const borderY = Number(item.getAttribute('height'))
+    console.log(startX, startY, borderX, borderY)
 
     // 確認方向
     // 直向
     if (rotate === "x") {
         // 橫向
-        line(startX,startX + borderX , startY, startY , stairId)
+        line(startX, startX + borderX , startY, startY , stairId)
         for (i = 0; i < 5; i++) {
             line(startX + (i * borderX / 5) , startX + (i * borderX / 5) , startY,startY - 10, stairId)
         }
-        line(startX,startX + borderX , startY - 10, startY - 10  , stairId)
+        line(startX, startX + borderX , startY - 10, startY - 10  , stairId)
     } else {
         // 直向
-        line((x - 1) * width + step02StartXY.x, (x - 1) * width + step02StartXY.x, maxborder.y - (y - 1) * long - long, maxborder.y - y * long - long, stairId)
-        for (i = 0; i < 5; i++) {
-            let xStart = (x - 1) * width
-            let yStart = (y) * long
-            line(xStart + step02StartXY.x, xStart + 10 + step02StartXY.x, maxborder.y - yStart + (i * long / 5) - long, maxborder.y - yStart + (i * long / 5) - long, stairId)
+        line(startX, startX, startY, startY + borderY, stairId)
+        for (i = 0; i < 5; i ++ ) {
+            line(startX, startX + 10, startY + (i * borderY / 5), startY + (i * borderY / 5), stairId)
         }
-        line((x - 1) * width + 10 + step02StartXY.x, (x - 1) * width + 10 + step02StartXY.x, maxborder.y - (y - 1) * long - long, maxborder.y - y * long - long, stairId)
+        line(startX + 10, startX + 10, startY, startY + borderY, stairId)
     }
 }
 
@@ -405,42 +414,53 @@ function descGridText(x, y, width, height, number, type) {
     if (type === "Y") {
         newX = step02StartXY.x / 2
         newY = y + (height / 2)
-        id = `descGrid_y_${number}`
+        id = `descGrid_y_${number}_text`
     } else {
         newY = step02StartXY.y / 2
         newX = x + (width / 2)
-        id = `descGrid_x_${number}`
+        id = `descGrid_x_${number}_text`
     }
-    var svgns = "http://www.w3.org/2000/svg";
-    var shape = document.createElementNS(svgns, "text");
-    shape.setAttributeNS(null, "id", id)
-    shape.setAttributeNS(null, "x", newX);
-    shape.setAttributeNS(null, "y", newY); //width="150" height="150"
-    //shape.setAttributeNS(null, "stroke","#0000FF")
-    shape.setAttributeNS(null, "fill", 'red')
-    shape.setAttributeNS(null, "dominant-baseline", "middle");
-    shape.setAttributeNS(null, "text-anchor", "middle");
-    shape.setAttributeNS(null, 'font-size', '8');
-    shape.innerHTML = number;
-    return shape
+    const item = document.getElementById(id)
+    if (!item) {
+        var svgns = "http://www.w3.org/2000/svg";
+        var shape = document.createElementNS(svgns, "text");
+        shape.setAttributeNS(null, "id", id)
+        shape.setAttributeNS(null, "x", newX);
+        shape.setAttributeNS(null, "y", newY); //width="150" height="150"
+        //shape.setAttributeNS(null, "stroke","#0000FF")
+        shape.setAttributeNS(null, "fill", 'red')
+        shape.setAttributeNS(null, "dominant-baseline", "middle");
+        shape.setAttributeNS(null, "text-anchor", "middle");
+        shape.setAttributeNS(null, 'font-size', '8');
+        shape.innerHTML = number;
+        return shape
+    } else {
+        return null
+    }
 }
 function descGridRect(x, y, width, height, number, type) {
     let id = ""
     if (type === "Y") {
-        id = `descGrid_y_${number}`
+        id = `descGrid_y_${number}_rect`
     } else {
-        id = `descGrid_x_${number}`
+        id = `descGrid_x_${number}_rect`
     }
-    var svgns = "http://www.w3.org/2000/svg";
-    var shape = document.createElementNS(svgns, "rect");
-    shape.setAttributeNS(null, "id", id)
-    shape.setAttributeNS(null, "x", x);
-    shape.setAttributeNS(null, "y", y); //width="150" height="150"
-    shape.setAttributeNS(null, "width", width)
-    shape.setAttributeNS(null, "height", height);
-    shape.setAttributeNS(null, "fill", "white");
-    shape.setAttributeNS(null, "stroke", "white");
-    return shape
+    const item = document.getElementById(id)
+    if (!item) {
+        var svgns = "http://www.w3.org/2000/svg";
+        var shape = document.createElementNS(svgns, "rect");
+        shape.setAttributeNS(null, "id", id)
+        shape.setAttributeNS(null, "x", x);
+        shape.setAttributeNS(null, "y", y); //width="150" height="150"
+        shape.setAttributeNS(null, "width", width)
+        shape.setAttributeNS(null, "height", height);
+        shape.setAttributeNS(null, "fill", "white");
+        shape.setAttributeNS(null, "stroke", "white");
+        return shape
+    } else {
+        return null    
+    }
+
 }
 
 // 新增drid 點擊事件
@@ -456,15 +476,14 @@ desc.addEventListener('click', e => {
                     // 修改x格
                     item = parseInt(id) - 1
                     baseWidth.x[item].border = Number(value)
-                    //fixArrayCoor()
+                    fixArrayCoor()
                 } else {
-
                     const targetIndex = parseInt(id) 
                     const targetObject = baseWidth.y.find(obj => parseInt(obj.id) === targetIndex);
                     if (targetObject) {
                         targetObject.border = Number(value);
                     }
-                    //fixArrayCoor()
+                    fixArrayCoor()
                 }
                 // 重置網格
                 drawBaseGrid()
@@ -479,8 +498,17 @@ function fixArrayCoor() {
     let arrX = []
     let arrY = []
     x = 0, y = 0
-    baseWidth.x.forEach(el => {arrX.push(x += el.border)})
+    baseWidth.x.forEach(el => arrX.push(x += el.border))
     baseWidth.y.forEach(el => arrY.push(y += el.border))
+    // 更新baseWidth
+    for (let i = 1; i < baseWidth.x.length; i ++ ) {
+        baseWidth.x[i].startCoor = arrX[i-1]
+    }
+    for (let i = 1; i < baseWidth.y.length; i ++ ) {
+        baseWidth.y[i].startCoor = arrY[i-1]
+    }
+
+    // 更新baseGrid
     let newArr = []
     array.forEach(el => {
         const item = {
@@ -875,13 +903,13 @@ function anchorSelectClose() {
             // 取消目標列表內容
             let targetItem = target.parentElement.parentElement.parentElement
             targetItem.remove();
+
         }
         if (stairSelect.childElementCount === 0 && anchorSelect.childElementCount === 0) {
             controlBar.classList.add("selecter-close")
         }
     })
 }
-
 
 // 重設座標
 const btnResetSvg = document.querySelector("#btnResetSvg")
@@ -977,12 +1005,12 @@ submit2.addEventListener('click', e => {
                 scaffoldArray.grid.push(item)
             }
         }
-        console.log(`處理${i}`)
     }
 
     // 取得梯位
     recordStair()
     // 取得錨定點
+    scaffoldArray.anchor = []
     const anchorList = document.querySelectorAll('.anchorList');
     anchorList.forEach(el => {
         // 取得各節點
@@ -1044,7 +1072,7 @@ function recordAnchor() {
             let x = parseInt(str[1])
             let y = parseInt(str[2])
             if (!isNaN(x) && !isNaN(y)) {
-                const anchorZ = getAnchorZ(x, y) // 之後要改
+                const anchorZ = getAnchorZ(x, y) 
                 anchorZ.forEach(el => {
                     let item = {
                         x: parseInt(x),
@@ -1134,6 +1162,8 @@ function buildFiveView() {
 
     // 先分別生成
     // top
+    // 重置
+    scaffoldArray.fiveViewGrid.topView = []
     array.forEach(el => {
         const start_x = xArray.filter((item) => item.id === el.x)[0].startCoor
         const start_y = yArray.filter((item) => item.id === el.y)[0].startCoor
@@ -1152,6 +1182,8 @@ function buildFiveView() {
     makRectText(startPoint, scaffoldArray.fiveViewGrid.topView)
     makStairTop(startPoint, scaffoldArray.fiveViewGrid.topView)
     // left
+    // 重置
+    scaffoldArray.fiveViewGrid.leftSideView = []
     array.forEach(el => {
         const r_id = parseInt(yArray.length - el.y + 1)
         const start_y = yArray.filter((item) => item.id === r_id)[0].startCoor
@@ -1174,6 +1206,8 @@ function buildFiveView() {
     makRung(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView')  
 
     // front
+    // 重置
+    scaffoldArray.fiveViewGrid.frontView = []
     array.forEach(el => {
         const start_x = xArray.filter((item) => item.id === el.x)[0].startCoor
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
@@ -1192,7 +1226,10 @@ function buildFiveView() {
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.frontView)
     makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')  
     makRung(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView') 
+
     // right
+    // 重置
+    scaffoldArray.fiveViewGrid.rightSideView = []
     array.forEach(el => {
         const start_y = yArray.filter((item) => item.id === el.y)[0].startCoor
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
@@ -1211,7 +1248,10 @@ function buildFiveView() {
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.rightSideView)
     makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView') 
     makRung(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')
+
     // rear
+    // 重置
+    scaffoldArray.fiveViewGrid.rearView = []
     array.forEach(el => {
         const r_id = xArray.length - el.x + 1
         const start_x = xArray.filter((item) => item.id === r_id)[0].startCoor
@@ -1232,6 +1272,9 @@ function buildFiveView() {
     makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView') 
     makRung(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView') 
 
+    // 生成錨定點
+    createAnchorPoint()
+
     let newWidth = ((maxWidth.x * 2) + (maxWidth.y * 2)) * scaling
     let newHigh = (maxWidth.y + maxWidth.z) * scaling
     let viewBox = `${0} ${0} ${newWidth} ${newHigh}`
@@ -1246,13 +1289,19 @@ function makRectangle(start, grid, target) {
     const scaling = scaffoldArray.base.scaling
     const goal = document.getElementById(target)
     grid.forEach(el => {
-        const width = el.border[0] * scaling
-        const height = el.border[1] * scaling
-        const x = start[0] + el.coord[0] * scaling
-        const y = start[1] - ( el.coord[1] + el.border[1] ) * scaling
-        // drawing.drawRect(x, y, x + width, y + long)
-        const shape = rectangle(x, y, width, height, id)
-        goal.appendChild(shape)
+        // 尋找有沒有已經有出現的rect
+        const id = `${target}_rect_${el.viewId}`
+        const item = document.getElementById(id)
+        if (!item) {
+            const width = el.border[0] * scaling
+            const height = el.border[1] * scaling
+            const x = start[0] + el.coord[0] * scaling
+            const y = start[1] - (el.coord[1] + el.border[1]) * scaling
+            // drawing.drawRect(x, y, x + width, y + long)
+
+            const shape = rectangle(x, y, width, height, id)
+            goal.appendChild(shape)
+        } 
     })
 }
 
@@ -1266,13 +1315,17 @@ function makRectText(start, grid) {
         topIdArr = topIdArr.map(item => `${item.split('_')[0]}_${item.split('_')[1]}`)
         for (let i = 0; i < topIdArr.length; i++) {
             if (topIdArr[i] === viewId) {
-                const width = el.border[0] * scaling
-                const long = el.border[1] * scaling
-                const x = start[0] + el.coord[0] * scaling
-                const y = start[1] - (el.coord[1] + el.border[1]) * scaling
-                const text = scaffoldArray.height[i].split('_')[2]
-                const shape = rectangleText(x, y, width, long, `rect_${topIdArr[i]}`, text)
-                topView.appendChild(shape)
+                const id = `rect_${topIdArr[i]}`
+                const item = document.getElementById(`topView_text_${id}`)
+                if (!item) {
+                    const width = el.border[0] * scaling
+                    const long = el.border[1] * scaling
+                    const x = start[0] + el.coord[0] * scaling
+                    const y = start[1] - (el.coord[1] + el.border[1]) * scaling
+                    const text = scaffoldArray.height[i].split('_')[2]
+                    const shape = rectangleText(x, y, width, long, id, text)
+                    topView.appendChild(shape)
+                }
             }
         }
     })
@@ -1285,7 +1338,7 @@ function rectangleText(x, y, width, height, id, value) {
     let newY = y + (height / 2)
     var svgns = "http://www.w3.org/2000/svg";
     var shape = document.createElementNS(svgns, "text");
-    shape.setAttributeNS(null, "id", `text_${id}` )
+    shape.setAttributeNS(null, "id", `topView_text_${id}` )
     shape.setAttributeNS(null, "x", newX);
     shape.setAttributeNS(null, "y", newY); //width="150" height="150"
     shape.setAttributeNS(null, "dominant-baseline", "middle");
@@ -1307,7 +1360,7 @@ function makStairTop(start, grid) {
                 const y = start[1] - (el.coord[1] + el.border[1]) * scaling
                 const stairWidth = el.border[0] / 4 * scaling
                 const stairLong = el.border[1] / 5 * scaling
-                makeFiveTopStair(x, y, x + stairWidth, y + el.border[1] * scaling, "y", `stiar_${stairArray[i]}`)
+                makeFiveTopStair(x, y, x + stairWidth, y + el.border[1] * scaling, "y", `topView_stiar_${stairArray[i]}`)
             }
         }
 
@@ -1318,25 +1371,28 @@ function makStairTop(start, grid) {
 function makeFiveTopStair(x1, y1, x2, y2, rotate, id) {
     // 建立一個group
     const topViewStair = document.getElementById("topViewStair")
-    const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    childGroup.setAttribute('id', id);
-    // 将子元素添加为父元素的子元素
-    topViewStair.appendChild(childGroup);
-    // 確認方向
-    if (rotate === "x") {
-        // 橫向
-        line(x1, x2, y1, y1, id)
-        for (i = 0; i < 5; i++) {
-            line(x1+ (i * (x2-x1) / 5), x1+ (i * (x2-x1) / 5), y1, y2, id)
+    const item = document.getElementById(id)
+    if (!item) {
+        const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        childGroup.setAttribute('id', id);
+        // 将子元素添加为父元素的子元素
+        topViewStair.appendChild(childGroup);
+        // 確認方向
+        if (rotate === "x") {
+            // 橫向
+            line(x1, x2, y1, y1, id)
+            for (i = 0; i < 5; i++) {
+                line(x1 + (i * (x2 - x1) / 5), x1 + (i * (x2 - x1) / 5), y1, y2, id)
+            }
+            line(x1, x2, y2, y2, id)
+        } else {
+            // 直向
+            line(x1, x1, y2, y1, id)
+            for (i = 0; i < 5; i++) {
+                line(x1, x2, y2 + (i * (y1 - y2) / 5), y2 + (i * (y1 - y2) / 5), id)
+            }
+            line(x2, x2, y2, y1, id)
         }
-        line(x1, x2 , y2, y2, id)
-    } else {
-        // 直向
-        line(x1 , x1, y2, y1, id)
-        for (i = 0; i < 5; i++) {
-            line(x1, x2, y2 + (i * (y1 - y2) / 5), y2 + (i * (y1 - y2) / 5), id)
-        }
-        line(x2, x2, y2, y1, id)
     }
 }
 
@@ -1369,7 +1425,7 @@ function drawStairStand(x1, x2, y1, y2, step, width, id) {
     // 将子元素添加为父元素的子元素
     topViewStair.appendChild(childGroup);
     line(x1, x2, y2, y1, id)
-    line(x1 + width / 5 - width / 10, x1 + width / 5 + width / 10, y1 + step, y1 + step, id)
+    line(x1 + width / 5 - width / 10, x1 + width / 5 + width / 10, y2 + step, y2 + step, id)
     line(x1 + width / 5 * 2 - width / 10, x1 + width / 5 * 2 + width / 10, y2 + step * 2, y2 + step * 2, id)
     line(x1 + width / 5 * 3 - width / 10, x1 + width / 5 * 3 + width / 10, y2 + step * 3, y2 + step * 3, id)
     line(x1 + width / 5 * 4 - width / 10, x1 + width / 5 * 4 + width / 10, y2 + step * 4, y2 + step * 4, id)    
@@ -1431,26 +1487,31 @@ function paintSymmetricCells(max) {
         painted[center + i] = true;
       }
     }
-  
     return painted;
   }  
 
   // 建立橫檔
 function makRung(start, grid, target) {
+    const rungRule =scaffoldArray.role.acnchor
     let rungArray = getrungValue(rungRule)
     const scaling = scaffoldArray.base.scaling;
     const rung = document.getElementById(target)
-    const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    childGroup.setAttribute('id', `${target}_rung`);
-    rung.appendChild(childGroup)
     grid.forEach(el => {
-      const x1 = start[0] + el.coord[0] * scaling
-      const x2 = x1 + el.border[0] * scaling
-      for (let i = 0; i < rungArray.length; i++) {
-        const y1 = start[1] - (el.coord[1] + rungArray[i]) * scaling
-        line(x1, x2, y2, y1, )
-        drawing.drawLine(x1, y1, x2, y1,`${target}_rung`)
-      }
+        const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const itemID = `${target}_rung_${el.viewId}`
+        const item = document.getElementById(itemID)
+        if (!item) {
+            const y0 = start[1] - el.coord[1]  * scaling
+            childGroup.setAttribute('id', itemID);
+            childGroup.setAttribute('st_y', y0)
+            rung.appendChild(childGroup)
+            const x1 = start[0] + el.coord[0] * scaling
+            const x2 = x1 + el.border[0] * scaling
+            for (let i = 0; i < rungArray.length; i++) {
+                const y1 = start[1] - (el.coord[1] + rungArray[i]) * scaling
+                line(x1, x2, y1, y1, itemID)
+            }
+        }
     })
   }
   
@@ -1469,151 +1530,88 @@ function makRung(start, grid, target) {
     }
   }
 
-// 指定三視圖位置
-let threeViewBorder = []
-const threeViewCoord = {
-    x: 0,
-    y: 0,
-    z: 0
-};
-let threeViewCount;
-let xyArray = []
-// 建立三視圖
-function buildThreeView() {
-
-    const grid = scaffoldArray.grid;
-    const size = scaffoldArray.base;
-    threeViewCount = grid.reduce((acc, item) => {
-        if (item.x > acc.x) {
-            acc.x = item.x;
-        }
-        if (item.y > acc.y) {
-            acc.y = item.y;
-        }
-        if (item.z > acc.z) {
-            acc.z = item.z;
-        }
-        return acc;
-    }, {
-        x: -Infinity,
-        y: -Infinity,
-        z: -Infinity
-    });
-    threeViewCoord.x = threeViewCount.x * itemValue.itemX;
-    threeViewCoord.y = threeViewCount.y * itemValue.itemY;
-    threeViewCoord.z = threeViewCount.z * itemValue.itemZ;
-    console.log(`threeviewZ ${threeViewCount.z} * ${itemValue.itemZ}`)
-    console.log(`threeviewX ${threeViewCount.x} * ${itemValue.itemX}`)
-    console.log(`threeviewY ${threeViewCount.y} * ${itemValue.itemY}`)
-
-    const [xzArr, yzArr, xyArr] = grid.reduce((acc, obj) => {
-        acc[0].push({ x: obj.x, z: obj.z });
-        acc[1].push({ y: obj.y, z: obj.z });
-        acc[2].push({ x: obj.x, y: obj.y });
-        return acc;
-    }, [[], [], []]);
-
-    // 去除重複的元素
-    const uniqueXZArr = [...new Set(xzArr.map(JSON.stringify))].map(JSON.parse);
-    const uniqueYZArr = [...new Set(yzArr.map(JSON.stringify))].map(JSON.parse);
-    const uniqueXYArr = [...new Set(xyArr.map(JSON.stringify))].map(JSON.parse);
-
-
-    // 合併重複 x 值的對象，選擇 z 值最大的對象
-    const mergedXZArr = uniqueXZArr.reduce((acc, obj) => {
-        const idx = acc.findIndex(el => el.x === obj.x);
-        if (idx === -1) {
-            acc.push(obj);
-        } else if (acc[idx].z < obj.z) {
-            acc[idx] = obj;
-        }
-        return acc;
-    }, []);
-
-    // 合併重複 y 值的對象，選擇 z 值最大的對象
-    const mergedYZArr = uniqueYZArr.reduce((acc, obj) => {
-        const idy = acc.findIndex(el => el.y === obj.y);
-        if (idy === -1) {
-            acc.push(obj);
-        } else if (acc[idy].z < obj.z) {
-            acc[idy] = obj;
-        }
-        return acc;
-    }, []);
-
-    // 合併重複 x 值的對象，選擇 y 值最大的對象
-    const mergedXYArr = uniqueXYArr.reduce((acc, obj) => {
-        const idx = acc.findIndex(el => el.x === obj.x);
-        if (idx === -1) {
-            acc.push(obj);
-        } else if (acc[idx].y < obj.y) {
-            acc[idx] = obj;
-        }
-        return acc;
-    }, []);
-
-    const frontViewArray = mergedXZArr.map(item => item.z);
-    const leftSideViewArray = mergedYZArr.map(item => item.z).reverse();
-    const rightSideViewArray = mergedYZArr.map(item => item.z);
-    const rearViewArray = mergedXZArr.map(item => item.z).reverse();
-    const topViewArray = mergedXYArr.map(item => item.y);
-    const sizeXZ = { x: itemValue.itemX, y: itemValue.itemZ }
-    const sizeYZ = { x: itemValue.itemY, y: itemValue.itemZ }
-    const sizeXY = { x: itemValue.itemX, y: itemValue.itemY }
-    getRectArray(30 + threeViewCoord.y + 50, threeViewCoord.y, sizeXY, topViewArray, 'topView')
-    threeViewBorder.push({ name: "topView", x: 30 + threeViewCoord.y + 50, y: 0, size: sizeXY })
-    getRectArray(30, threeViewCoord.z + threeViewCoord.y + 140, sizeYZ, leftSideViewArray, 'leftSideView')
-    threeViewBorder.push({ name: "leftSideView", x: 30, y: threeViewCoord.y, size: sizeYZ })
-    getRectArray(30 + threeViewCoord.y + 50, threeViewCoord.z + threeViewCoord.y + 140, sizeXZ, frontViewArray, 'frontView')
-    threeViewBorder.push({ name: "frontView", x: 30 + threeViewCoord.y + 50, y: threeViewCoord.y, size: sizeXZ })
-    getRectArray(30 + threeViewCoord.y + threeViewCoord.x + 100, threeViewCoord.z + threeViewCoord.y + 140, sizeYZ, rightSideViewArray, 'rightSideView')
-    threeViewBorder.push({ name: "rightSideView", x: 30 + threeViewCoord.y + threeViewCoord.x + 100, y: threeViewCoord.y, size: sizeYZ })
-    getRectArray(30 + threeViewCoord.y * 2 + threeViewCoord.x + 150, threeViewCoord.z + threeViewCoord.y + 140, sizeXZ, rearViewArray, 'rearView')
-    threeViewBorder.push({ name: "rearView", x: 30 + threeViewCoord.y * 2 + threeViewCoord.x + 150, y: threeViewCoord.y, size: sizeXZ })
-
-    xyArray = [
-        { type: 'topView', x: 30 + threeViewCoord.y + 50, y: threeViewCoord.y },
-        { type: 'leftSideView', x: 30, y: threeViewCoord.z + threeViewCoord.y + 140 },
-        { type: 'frontView', x: 30 + threeViewCoord.y + 50, y: threeViewCoord.z + threeViewCoord.y + 140 },
-        { type: 'rightSideView', x: 30 + threeViewCoord.y + threeViewCoord.x + 100, y: threeViewCoord.z + threeViewCoord.y + 140 },
-        { type: 'rearView', x: 30 + threeViewCoord.y * 2 + threeViewCoord.x + 150, y: threeViewCoord.z + threeViewCoord.y + 140 }
-    ]
-    getAnchorArray(xyArray)
+// 變更橫桿規則
+// 取得所有橫桿，依據橫桿的大小更改橫桿
+function changeRung() {
+    // 定義要找的
+    const left = document.getElementById('leftSideView').childNodes
+    const front = document.getElementById('frontView').childNodes
+    const right = document.getElementById('rightSideView').childNodes
+    const rear = document.getElementById('rearView').childNodes
+    newRung(left)
+    newRung(front)
+    newRung(right)
+    newRung(rear)
 }
 
-function getRectArray(x, y, size, arr, id) {
-    console.log(y, id)
-    const target = document.getElementById(id)
-    for (i = 0; i < arr.length; i++) {
-        let zSize = arr[i]
-        for (j = 0; j < zSize; j++) {
-            let rectStartX = x + i * size.x
-            let rectStartY = y - (j + 1) * size.y
-            let rectId = `${id}_${i + 1}_${j + 1}`
-            if (id !== 'topView') {
-                let shape = rectangle(rectStartX, rectStartY, size.x, size.y, rectId)
-                target.appendChild(shape);
-                if (i % 2 === 0) {
-                    if (i > arr.length / 2) {
-                        line(rectStartX, rectStartX + size.x, rectStartY, rectStartY + size.y, id)
-                    } else {
-                        line(rectStartX, rectStartX + size.x, rectStartY + size.y, rectStartY, id)
-                    }
-                }
-            } else {
-                // 建立高的名稱
-                const textValue = `text_rect_${i + 1}_${j + 1}`
-                const textItem = document.getElementById(textValue).innerHTML
-                if (parseInt(textItem) > 0) {
-                    let shape = rectangle(rectStartX, rectStartY, size.x, size.y, rectId)
-                    target.appendChild(shape);
-                    const shapeHigh = rectangleHeight(rectStartX, rectStartY, size.x, size.y, textItem)
-                    target.appendChild(shapeHigh)
-                }
+function newRung(arr) {
+    const scaling = scaffoldArray.base.scaling
+    const rungRoleValue = getrungValue(scaffoldArray.role.acnchor)
+    arr.forEach(el => {
+        const id = el.getAttribute('id').split('_')
+        if (id[1] === 'rung') {
+            const y0 = el.getAttribute('st_y')
+            const child = el.firstChild
+            const x1 = child.getAttribute('x1')
+            const x2 = child.getAttribute('x2')
+            while (el.firstChild) {
+                el.removeChild(el.firstChild)
+            }
+            for (let i = 0; i < rungRoleValue.length; i++) {
+                const y1 = y0 - rungRoleValue[i] * scaling
+                const groupId = el.getAttribute('id')
+                line(x1, x2, y1, y1, groupId)
             }
         }
+    })
+}
+
+const rungRole = document.getElementById('rungRole')
+rungRole.addEventListener('change', e => {
+    scaffoldArray.role.acnchor = Number(rungRole.value)
+    changeRung()
+})
+
+// 生成錨定點
+function createAnchorPoint() {
+    const anchorArray = scaffoldArray.anchor
+    // 取得xyz最大值
+    const max = [scaffoldArray.base.coordX, scaffoldArray.base.coordY, scaffoldArray.base.coordZ]
+    anchorArray.forEach(el => {
+        const x = el.split('_')[0]
+        const y = el.split('_')[1]
+        const z = el.split('_')[2]
+        // todo 錨定點
+        const topId = `topView_rect_${x}_${y}`
+        const leftId = `leftSideView_rect_${max[1] - y + 1}_${z}`
+        const rightId = `rightSideView_rect_${y}_${z}`
+        const frontId = `frontView_rect_${x}_${z}`
+        const rearId = `rearView_rect_${max[0] - x + 1}_${z}`
+        console.log(topId)
+        addAnchorPoint(topId, 'topView')
+        addAnchorPoint(leftId, 'leftSideView')
+        addAnchorPoint(frontId, 'frontView')
+        addAnchorPoint(rightId, 'rightSideView')
+        addAnchorPoint(rearId, 'rearView')
+    })
+}
+
+function addAnchorPoint(targetId, target) {
+    const view = document.getElementById(target)
+    const targetTop = document.getElementById(targetId)
+    const top_x = targetTop.getAttribute('x')
+    const top_y = targetTop.getAttribute('y')
+    const newTopId = `${target}_anchor_${targetId.split('_')[2]}_${targetId.split('_')[3]}`
+    const itemTop = document.getElementById(newTopId)
+    if (!itemTop) {
+        const shape = circle(top_x, top_y, newTopId)
+        view.appendChild(shape)
     }
 }
+
+///  ==========================================================
+// ============================================================
+///  ==========================================================
 
 function getAnchorArray(xyArr) {
     const target = document.getElementById("anchorFiveView")
@@ -1801,7 +1799,9 @@ function setRectHighInput(rectArray) {
 
     rectArray.forEach(el => {
         const coord = el.id.split('_')
-        str += `, (${coord[1]}, ${coord[2]})`
+        if (coord[0] !== 'descGrid') {
+            str += `, (${coord[1]}, ${coord[2]})`
+        }
     })
     str = str.substring(1, str.length)
     if (rectArray.length > 0) {
@@ -1834,29 +1834,25 @@ function setRectHighInput(rectArray) {
  */
 const backToStep03 = document.getElementById("backTostep03")
 backToStep03.addEventListener("click", e => {
-    const topView03 = document.getElementById("topView")
-    const frontView03 = document.getElementById("frontView03")
-    const rearView03 = document.getElementById("rearView")
-    const leftSideView03 = document.getElementById("leftSideView")
-    const rightSideView03 = document.getElementById("rightSideView")
-    const anchor3D_view = document.getElementById("anchorFiveView")
-    while (topView03.firstChild) {
-        topView03.removeChild(topView03.firstChild)
+    const topView = document.getElementById("topView")
+    const frontView = document.getElementById("frontView")
+    const rearView = document.getElementById("rearView")
+    const leftSideView = document.getElementById("leftSideView")
+    const rightSideView = document.getElementById("rightSideView")
+    while (topView.firstChild) {
+        topView.removeChild(topView.firstChild)
     }
-    while (frontView03.firstChild) {
-        frontView03.removeChild(frontView03.firstChild)
+    while (frontView.firstChild) {
+        frontView.removeChild(frontView.firstChild)
     }
-    while (rearView03.firstChild) {
-        rearView03.removeChild(rearView03.firstChild)
+    while (rearView.firstChild) {
+        rearView.removeChild(rearView.firstChild)
     }
-    while (leftSideView03.firstChild) {
-        leftSideView03.removeChild(leftSideView03.firstChild)
+    while (leftSideView.firstChild) {
+        leftSideView.removeChild(leftSideView.firstChild)
     }
-    while (rightSideView03.firstChild) {
-        rightSideView03.removeChild(rightSideView03.firstChild)
-    }
-    while (anchor3D_view.firstChild) {
-        anchor3D_view.removeChild(anchor3D_view.firstChild)
+    while (rightSideView.firstChild) {
+        rightSideView.removeChild(rightSideView.firstChild)
     }
 })
 
