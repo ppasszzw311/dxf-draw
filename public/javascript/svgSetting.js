@@ -13,7 +13,7 @@ let scaffoldArray = {
     },
     role: {
         acnchor: 1,
-        rung:1
+        rung: 1
     },
     height: [],
     baseGrid: [],
@@ -190,7 +190,7 @@ function createRectangleSvg(coorArray) {
     let viewBox = `${0} ${0} ${maxborder.x} ${maxborder.y + 40}`
     //	設定 SVG viewBox 屬性值
     svg.setAttribute('viewBox', viewBox)
-    
+
     // 畫方格
     let newCoordArray = [];
     coorArray.forEach((el) => {
@@ -220,7 +220,7 @@ function createRectangleSvg(coorArray) {
 
         createDescText(coorX, coorY, width, long, id)
         // 網格與文字處理
-        
+
     })
 }
 
@@ -230,8 +230,8 @@ function createDescText(coorX, coorY, width, long, id) {
     const coordY = document.getElementById(`decsGrid_y_${id.split('_')[2]}`)
     if (!coordX) {
         // 新增一個
-        const shape = descGridText(coorX, 0, width,25, id.split('_')[1], "X")
-        const shapeRect = descGridRect(coorX, 0, width,25, id.split('_')[1], "X")
+        const shape = descGridText(coorX, 0, width, 25, id.split('_')[1], "X")
+        const shapeRect = descGridRect(coorX, 0, width, 25, id.split('_')[1], "X")
         if (shapeRect !== null) {
             desc.appendChild(shapeRect)
         }
@@ -377,15 +377,15 @@ function makeStair(x, y, long, width, rotate) {
     // 直向
     if (rotate === "x") {
         // 橫向
-        line(startX, startX + borderX , startY, startY , stairId)
+        line(startX, startX + borderX, startY, startY, stairId)
         for (i = 0; i < 5; i++) {
-            line(startX + (i * borderX / 5) , startX + (i * borderX / 5) , startY,startY - 10, stairId)
+            line(startX + (i * borderX / 5), startX + (i * borderX / 5), startY, startY - 10, stairId)
         }
-        line(startX, startX + borderX , startY - 10, startY - 10  , stairId)
+        line(startX, startX + borderX, startY - 10, startY - 10, stairId)
     } else {
         // 直向
         line(startX, startX, startY, startY + borderY, stairId)
-        for (i = 0; i < 5; i ++ ) {
+        for (i = 0; i < 5; i++) {
             line(startX, startX + 10, startY + (i * borderY / 5), startY + (i * borderY / 5), stairId)
         }
         line(startX + 10, startX + 10, startY, startY + borderY, stairId)
@@ -456,7 +456,7 @@ function descGridRect(x, y, width, height, number, type) {
         shape.setAttributeNS(null, "stroke", "white");
         return shape
     } else {
-        return null    
+        return null
     }
 
 }
@@ -476,7 +476,7 @@ desc.addEventListener('click', e => {
                     baseWidth.x[item].border = Number(value)
                     fixArrayCoor()
                 } else {
-                    const targetIndex = parseInt(id) 
+                    const targetIndex = parseInt(id)
                     const targetObject = baseWidth.y.find(obj => parseInt(obj.id) === targetIndex);
                     if (targetObject) {
                         targetObject.border = Number(value);
@@ -499,11 +499,11 @@ function fixArrayCoor() {
     baseWidth.x.forEach(el => arrX.push(x += el.border))
     baseWidth.y.forEach(el => arrY.push(y += el.border))
     // 更新baseWidth
-    for (let i = 1; i < baseWidth.x.length; i ++ ) {
-        baseWidth.x[i].startCoor = arrX[i-1]
+    for (let i = 1; i < baseWidth.x.length; i++) {
+        baseWidth.x[i].startCoor = arrX[i - 1]
     }
-    for (let i = 1; i < baseWidth.y.length; i ++ ) {
-        baseWidth.y[i].startCoor = arrY[i-1]
+    for (let i = 1; i < baseWidth.y.length; i++) {
+        baseWidth.y[i].startCoor = arrY[i - 1]
     }
 
     // 更新baseGrid
@@ -513,8 +513,8 @@ function fixArrayCoor() {
             x: el.x,
             y: el.y,
             z: el.z,
-            border: [baseWidth.x[el.x-1].border, baseWidth.y[el.y-1].border, el.border[2]],
-            startCoor:[arrX[el.x-1], arrY[el.y-1], el.startCoor[2]]
+            border: [baseWidth.x[el.x - 1].border, baseWidth.y[el.y - 1].border, el.border[2]],
+            startCoor: [arrX[el.x - 1], arrY[el.y - 1], el.startCoor[2]]
         }
         newArr.push(item)
     })
@@ -625,101 +625,105 @@ function selectModeMouse() {
 
     function onMouseUpMode(e) {
         if (!mouseOn) return;
-            clearEventBubble(e);
-            mouseOn = false;
-            var selDiv = document.getElementById('selectDiv');
-            var fileDivs = document.getElementsByTagName('rect')
-            var selectedEls = [];
-            dblclickEvent.classList.remove('dblclick')
-            // 获取参数
-            var l = selDiv.offsetLeft;
-            var t = selDiv.offsetTop;
-            var w = selDiv.offsetWidth;
-            var h = selDiv.offsetHeight;
-            for (var i = 0; i < fileDivs.length; i++) {
-                var sl = fileDivs[i].offsetWidth + fileDivs[i].offsetLeft;
-                var st = fileDivs[i].offsetHeight + fileDivs[i].offsetTop;
-                if (fileDivs[i].getBoundingClientRect().right > l && fileDivs[i].getBoundingClientRect().bottom > t
-                    && fileDivs[i].getBoundingClientRect().left < l + w && fileDivs[i].getBoundingClientRect().top < t + h) {
-                    // 该DOM元素被选中，进行处理
-                    selectedEls.push(fileDivs[i]);
-                    makeStairtags(fileDivs[i].id)
-                    // 加上顏色
-                    fileDivs[i].classList.add('select-stair')
-                }
+        clearEventBubble(e);
+        mouseOn = false;
+        var selDiv = document.getElementById('selectDiv');
+        var fileDivs = document.getElementsByTagName('rect')
+        var selectedEls = [];
+        dblclickEvent.classList.remove('dblclick')
+        // 获取参数
+        var l = selDiv.offsetLeft;
+        var t = selDiv.offsetTop;
+        var w = selDiv.offsetWidth;
+        var h = selDiv.offsetHeight;
+        for (var i = 0; i < fileDivs.length; i++) {
+            var sl = fileDivs[i].offsetWidth + fileDivs[i].offsetLeft;
+            var st = fileDivs[i].offsetHeight + fileDivs[i].offsetTop;
+            if (fileDivs[i].getBoundingClientRect().right > l && fileDivs[i].getBoundingClientRect().bottom > t
+                && fileDivs[i].getBoundingClientRect().left < l + w && fileDivs[i].getBoundingClientRect().top < t + h) {
+                // 该DOM元素被选中，进行处理
+                selectedEls.push(fileDivs[i]);
+                makeStairtags(fileDivs[i].id)
+                // 加上顏色
+                fileDivs[i].classList.add('select-stair')
             }
-            // ===============選擇梯位===================== 確認儲存
-            // 恢复参数
-            selDiv.style.display = 'none';
-            stairSelectClose();
+        }
+        // ===============選擇梯位===================== 確認儲存
+        // 恢复参数
+        selDiv.style.display = 'none';
+        stairSelectClose();
 
     }
 
     function onMouseMoveMode(e) {
         if (!mouseOn) return;
-            clearEventBubble(e);
-            var _x = e.clientX;
-            var _y = e.clientY;
-            var selDiv = document.getElementById('selectDiv');
-            selDiv.style.display = 'block';
-            selDiv.style.left = Math.min(_x, startX) + 'px';
-            selDiv.style.top = Math.min(_y, startY) + 'px';
-            selDiv.style.width = Math.abs(_x - startX) + 'px';
-            selDiv.style.height = Math.abs(_y - startY) + 'px';
+        clearEventBubble(e);
+        var _x = e.clientX;
+        var _y = e.clientY;
+        var selDiv = document.getElementById('selectDiv');
+        selDiv.style.display = 'block';
+        selDiv.style.left = Math.min(_x, startX) + 'px';
+        selDiv.style.top = Math.min(_y, startY) + 'px';
+        selDiv.style.width = Math.abs(_x - startX) + 'px';
+        selDiv.style.height = Math.abs(_y - startY) + 'px';
     }
 
     function onMouseDownMode(e) {
         clearEventBubble(e);
         if (e.buttons !== 1 || e.which !== 1) return;
         mouseOn = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            var selDiv = document.createElement('div');
-            selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
-            selDiv.id = 'selectDiv';
-            document.body.appendChild(selDiv);
-            selDiv.style.left = startX + 'px';
-            selDiv.style.top = startY + 'px';
+        startX = e.clientX;
+        startY = e.clientY;
+        var selDiv = document.createElement('div');
+        selDiv.style.cssText = 'position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;';
+        selDiv.id = 'selectDiv';
+        document.body.appendChild(selDiv);
+        selDiv.style.left = startX + 'px';
+        selDiv.style.top = startY + 'px';
     }
 
     function onMouseUpModeAnchor(e) {
         // if (dblclickEvent.classList.contains('dblclick')) {
-            
         // }
         if (!mouseOn) return;
-            clearEventBubble(e);
-            mouseOn = false;
-            var selDiv = document.getElementById('selectDiv');
-            var fileDivs = document.getElementsByTagName('rect')
-            var selectedEls = [];
-            dblclickEvent.classList.remove('dblclick')
-            // 获取参数
-            var l = selDiv.offsetLeft;
-            var t = selDiv.offsetTop;
-            var w = selDiv.offsetWidth;
-            var h = selDiv.offsetHeight;
-            for (var i = 0; i < fileDivs.length; i++) {
-                let selectItemX = fileDivs[i].getBoundingClientRect().left
-                let selectItemY = fileDivs[i].getBoundingClientRect().top
-                if (selectItemX > l && selectItemY > t && selectItemX < l + w && selectItemY < t + h) {
-                    let anchorId = `anchor_${fileDivs[i].id.split('_')[1]}_${fileDivs[i].id.split('_')[2]}`
-                    try {
-                        let anchorItem = document.getElementById(anchorId)
-                    } catch (e) {
-                        const shape = circle(fileDivs[i].getAttribute('x'), fileDivs[i].getAttribute('y'), anchorId)
-                        anchor.appendChild(shape);
-                        // 该DOM元素被选中，进行处理
-                        makeAnchortags(anchorId)
+        clearEventBubble(e);
+        mouseOn = false;
+        var selDiv = document.getElementById('selectDiv');
+        var fileDivs = document.getElementsByTagName('rect')
+        var selectedEls = [];
+        dblclickEvent.classList.remove('dblclick')
+        // 获取参数
+        var l = selDiv.offsetLeft;
+        var t = selDiv.offsetTop;
+        var w = selDiv.offsetWidth;
+        var h = selDiv.offsetHeight;
+        for (var i = 0; i < fileDivs.length; i++) {
+            let selectItemX = fileDivs[i].getBoundingClientRect().left
+            let selectItemY = fileDivs[i].getBoundingClientRect().top
+            if (selectItemX > l && selectItemY > t && selectItemX < l + w && selectItemY < t + h) {
+                let anchorId = `anchor_${fileDivs[i].id.split('_')[1]}_${fileDivs[i].id.split('_')[2]}`
+                try {
+                    console.log(anchorId)
+                    let anchorItem = document.getElementById(anchorId)
+                    if (anchorItem === null) {
+                        throw "anchorItem is null"
                     }
-
-                    // 加上顏色
-                    //fileDivs[i].classList.add('select-stair')
+                } catch (e) {
+                    console.log("onMouseUpModeAnchor111")
+                    const shape = circle(fileDivs[i].getAttribute('x'), fileDivs[i].getAttribute('y'), anchorId)
+                    anchor.appendChild(shape);
+                    // 该DOM元素被选中，进行处理
+                    makeAnchortags(anchorId)
                 }
+
+                // 加上顏色
+                //fileDivs[i].classList.add('select-stair')
             }
-            // ===============選擇梯位===================== 確認儲存
-            // 恢复参数
-            selDiv.style.display = 'none';
-            anchorSelectClose();
+        }
+        // ===============選擇梯位===================== 確認儲存
+        // 恢复参数
+        selDiv.style.display = 'none';
+        anchorSelectClose();
 
 
     }
@@ -729,38 +733,38 @@ function selectModeMouse() {
 
     function onMouseUpModeHigh(e) {
         // if (dblclickEvent.classList.contains('dblclick')) {
-            
+
         // }
         if (!mouseOn) return;
-            clearEventBubble(e);
-            mouseOn = false;
-            var selDiv = document.getElementById('selectDiv');
-            var fileDivs = document.getElementsByTagName('rect')
-            var selectedEls = [];
-            dblclickEvent.classList.remove('dblclick')
-            // 获取参数
-            var l = selDiv.offsetLeft;
-            var t = selDiv.offsetTop;
-            var w = selDiv.offsetWidth;
-            var h = selDiv.offsetHeight;
-            for (var i = 0; i < fileDivs.length; i++) {
-                var sl = fileDivs[i].offsetWidth + fileDivs[i].offsetLeft;
-                var st = fileDivs[i].offsetHeight + fileDivs[i].offsetTop;
-                if (fileDivs[i].getBoundingClientRect().right > l && fileDivs[i].getBoundingClientRect().bottom > t
-                    && fileDivs[i].getBoundingClientRect().left < l + w && fileDivs[i].getBoundingClientRect().top < t + h) {
-                    // 该DOM元素被选中，进行处理
-                    selectedEls.push(fileDivs[i]);
-                    // 跳出彈框
-                    // 加上顏色
-                }
+        clearEventBubble(e);
+        mouseOn = false;
+        var selDiv = document.getElementById('selectDiv');
+        var fileDivs = document.getElementsByTagName('rect')
+        var selectedEls = [];
+        dblclickEvent.classList.remove('dblclick')
+        // 获取参数
+        var l = selDiv.offsetLeft;
+        var t = selDiv.offsetTop;
+        var w = selDiv.offsetWidth;
+        var h = selDiv.offsetHeight;
+        for (var i = 0; i < fileDivs.length; i++) {
+            var sl = fileDivs[i].offsetWidth + fileDivs[i].offsetLeft;
+            var st = fileDivs[i].offsetHeight + fileDivs[i].offsetTop;
+            if (fileDivs[i].getBoundingClientRect().right > l && fileDivs[i].getBoundingClientRect().bottom > t
+                && fileDivs[i].getBoundingClientRect().left < l + w && fileDivs[i].getBoundingClientRect().top < t + h) {
+                // 该DOM元素被选中，进行处理
+                selectedEls.push(fileDivs[i]);
+                // 跳出彈框
+                // 加上顏色
             }
-            // 打印被选中DOM元素
-            selDiv.style.display = 'none';
+        }
+        // 打印被选中DOM元素
+        selDiv.style.display = 'none';
 
 
-            // ===============選擇梯位===================== 確認儲存
-            // 恢复参数
-            setTimeout(setRectHighInput(selectedEls), 400)
+        // ===============選擇梯位===================== 確認儲存
+        // 恢复参数
+        setTimeout(setRectHighInput(selectedEls), 400)
 
 
     }
@@ -1010,7 +1014,7 @@ submit2.addEventListener('click', e => {
             // 之後棄用
         })
     })
-  
+
     // 建立五視圖
     buildFiveView()
     // 建立三視圖
@@ -1027,8 +1031,8 @@ function recordStair() {
             let y = parseInt(str[2])
             if (!isNaN(x) && !isNaN(y)) {
                 const z = getStairHeight(x, y)
-                for (let i = 0; i < z; i ++) {
-                    scaffoldArray.stair.push(`${x}_${y}_${i+1}`)   
+                for (let i = 0; i < z; i++) {
+                    scaffoldArray.stair.push(`${x}_${y}_${i + 1}`)
                 }
             }
         }
@@ -1056,7 +1060,7 @@ function recordAnchor() {
             let x = parseInt(str[1])
             let y = parseInt(str[2])
             if (!isNaN(x) && !isNaN(y)) {
-                const anchorZ = getAnchorZ(x, y) 
+                const anchorZ = getAnchorZ(x, y)
                 anchorZ.forEach(el => {
                     let item = {
                         x: parseInt(x),
@@ -1131,10 +1135,11 @@ function buildFiveView() {
         }
     })
     yArray.forEach(el => {
-        const value = el.startCoor + el.border 
+        const value = el.startCoor + el.border
         if (maxWidth.y < value) {
-            maxWidth.y = Number(value) 
-    }})
+            maxWidth.y = Number(value)
+        }
+    })
     zArray.forEach(el => {
         const value = el.startCoor + el.border
         if (maxWidth.z < value) {
@@ -1155,12 +1160,12 @@ function buildFiveView() {
             id: `${el.x}_${el.y}_${el.z}`,
             viewId: `${el.x}_${el.y}`,
             coord: [start_x, start_y],
-            border: [border_x,border_y]
+            border: [border_x, border_y]
         }
         scaffoldArray.fiveViewGrid.topView.push(item)
     })
-    startPoint = [40 + (maxWidth.y * scaling) + 60, 40 + (maxWidth.y * scaling) ]
-    makRectangle(startPoint, scaffoldArray.fiveViewGrid.topView, 'topView')  
+    startPoint = [40 + (maxWidth.y * scaling) + 60, 40 + (maxWidth.y * scaling)]
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.topView, 'topView')
     makRectText(startPoint, scaffoldArray.fiveViewGrid.topView)
     makStairTop(startPoint, scaffoldArray.fiveViewGrid.topView)
     // left
@@ -1177,16 +1182,16 @@ function buildFiveView() {
             id: `${el.x}_${el.y}_${el.z}`,
             viewId: `${r_id}_${el.z}`,
             coord: [start_y, start_z],
-            border: [border_y,border_z]
+            border: [border_y, border_z]
         }
         scaffoldArray.fiveViewGrid.leftSideView.push(item)
     })
     // 新增
     startPoint = [40, 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
-    makRectangle(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView') 
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView')
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.leftSideView)
     makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView')
-    makRung(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView')  
+    makRung(startPoint, scaffoldArray.fiveViewGrid.leftSideView, 'leftSideView')
 
     // front
     // 重置
@@ -1200,15 +1205,15 @@ function buildFiveView() {
             id: `${el.x}_${el.y}_${el.z}`,
             viewId: `${el.x}_${el.z}`,
             coord: [start_x, start_z],
-            border: [border_x,border_z]
+            border: [border_x, border_z]
         }
         scaffoldArray.fiveViewGrid.frontView.push(item)
     })
     startPoint = [40 + (maxWidth.y * scaling) + 60, 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
     makRectangle(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.frontView)
-    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')  
-    makRung(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView') 
+    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')
+    makRung(startPoint, scaffoldArray.fiveViewGrid.frontView, 'frontView')
 
     // right
     // 重置
@@ -1222,14 +1227,14 @@ function buildFiveView() {
             id: `${el.x}_${el.y}_${el.z}`,
             viewId: `${el.y}_${el.z}`,
             coord: [start_y, start_z],
-            border: [border_y,border_z]
+            border: [border_y, border_z]
         }
         scaffoldArray.fiveViewGrid.rightSideView.push(item)
     })
     startPoint = [40 + (maxWidth.y * scaling) + 120 + (maxWidth.x * scaling), 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
-    makRectangle(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')  
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.rightSideView)
-    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView') 
+    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')
     makRung(startPoint, scaffoldArray.fiveViewGrid.rightSideView, 'rightSideView')
 
     // rear
@@ -1245,15 +1250,15 @@ function buildFiveView() {
             id: `${el.x}_${el.y}_${el.z}`,
             viewId: `${r_id}_${el.z}`,
             coord: [start_x, start_z],
-            border: [border_x,border_z]
+            border: [border_x, border_z]
         }
         scaffoldArray.fiveViewGrid.rearView.push(item)
-    }) 
+    })
     startPoint = [40 + (maxWidth.y * 2 * scaling) + 180 + (maxWidth.x * scaling), 40 + 160 + (maxWidth.y * scaling) + (maxWidth.z * scaling)]
-    makRectangle(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView')  
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView')
     makStairStand(startPoint, scaffoldArray.fiveViewGrid.rearView)
-    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView') 
-    makRung(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView') 
+    makDiagonalBraces(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView')
+    makRung(startPoint, scaffoldArray.fiveViewGrid.rearView, 'rearView')
 
     // 生成錨定點
     createAnchorPoint()
@@ -1284,7 +1289,7 @@ function makRectangle(start, grid, target) {
 
             const shape = rectangle(x, y, width, height, id)
             goal.appendChild(shape)
-        } 
+        }
     })
 }
 
@@ -1321,7 +1326,7 @@ function rectangleText(x, y, width, height, id, value) {
     let newY = y + (height / 2)
     var svgns = "http://www.w3.org/2000/svg";
     var shape = document.createElementNS(svgns, "text");
-    shape.setAttributeNS(null, "id", `topView_text_${id}` )
+    shape.setAttributeNS(null, "id", `topView_text_${id}`)
     shape.setAttributeNS(null, "x", newX);
     shape.setAttributeNS(null, "y", newY); //width="150" height="150"
     shape.setAttributeNS(null, "dominant-baseline", "middle");
@@ -1411,7 +1416,7 @@ function drawStairStand(x1, x2, y1, y2, step, width, id) {
     line(x1 + width / 5 - width / 10, x1 + width / 5 + width / 10, y2 + step, y2 + step, id)
     line(x1 + width / 5 * 2 - width / 10, x1 + width / 5 * 2 + width / 10, y2 + step * 2, y2 + step * 2, id)
     line(x1 + width / 5 * 3 - width / 10, x1 + width / 5 * 3 + width / 10, y2 + step * 3, y2 + step * 3, id)
-    line(x1 + width / 5 * 4 - width / 10, x1 + width / 5 * 4 + width / 10, y2 + step * 4, y2 + step * 4, id)    
+    line(x1 + width / 5 * 4 - width / 10, x1 + width / 5 * 4 + width / 10, y2 + step * 4, y2 + step * 4, id)
 }
 
 // 建立斜撐
@@ -1423,58 +1428,58 @@ function makDiagonalBraces(start, grid, target) {
     childGroup.setAttribute('id', `${target}_makDiagonalBraces`);
     diagonalBraces.appendChild(childGroup)
     try {
-      //需要左右對稱，先取得總共寬數
-      let max = 0
-      grid.forEach(el => {
-        const x = Number(el.viewId.split('_')[0])
-        max = max > x ? max : x
-      })
-      const braceArray = paintSymmetricCells(max)
-  
-      grid.forEach(el => {
-        const Id_x = parseInt(el.viewId.split('_')[0])
-        const x1 = start[0] + el.coord[0] * scaling
-        const x2 = x1 + el.border[0] * scaling
-        const y1 = start[1] - el.coord[1] * scaling
-        const y2 = y1 - el.border[1] * scaling
-        if (Id_x > max / 2 && braceArray[Id_x - 1]) {
-            const id = el.viewId
-            line(x1, x2, y2, y1, `${target}_makDiagonalBraces`)
-        } else if (Id_x <= max / 2 && braceArray[Id_x - 1]) {
-            line(x1, x2, y1, y2, `${target}_makDiagonalBraces`)
-        }
-      })
+        //需要左右對稱，先取得總共寬數
+        let max = 0
+        grid.forEach(el => {
+            const x = Number(el.viewId.split('_')[0])
+            max = max > x ? max : x
+        })
+        const braceArray = paintSymmetricCells(max)
+
+        grid.forEach(el => {
+            const Id_x = parseInt(el.viewId.split('_')[0])
+            const x1 = start[0] + el.coord[0] * scaling
+            const x2 = x1 + el.border[0] * scaling
+            const y1 = start[1] - el.coord[1] * scaling
+            const y2 = y1 - el.border[1] * scaling
+            if (Id_x > max / 2 && braceArray[Id_x - 1]) {
+                const id = el.viewId
+                line(x1, x2, y2, y1, `${target}_makDiagonalBraces`)
+            } else if (Id_x <= max / 2 && braceArray[Id_x - 1]) {
+                line(x1, x2, y1, y2, `${target}_makDiagonalBraces`)
+            }
+        })
     } catch (error) {
     }
-  }
+}
 
 
 // 判斷間隔格子
 function paintSymmetricCells(max) {
     let painted = Array(max).fill(false);
-  
+
     // 計算中心點
     const center = Math.floor(max / 2);
-  
+
     // 如果格子數量是偶數，則在中心點兩邊同時塗色，保持對稱
     if (max % 2 === 0) {
-      for (let i = 0; i <= center; i += 2) {
-        painted[i] = true;
-        painted[max - 1 - i] = true;
-      }
+        for (let i = 0; i <= center; i += 2) {
+            painted[i] = true;
+            painted[max - 1 - i] = true;
+        }
     } else {
-      // 如果格子數量是奇數，從中心點開始向兩邊塗色，保持對稱
-      for (let i = 0; i <= center; i += 2) {
-        painted[center - i] = true;
-        painted[center + i] = true;
-      }
+        // 如果格子數量是奇數，從中心點開始向兩邊塗色，保持對稱
+        for (let i = 0; i <= center; i += 2) {
+            painted[center - i] = true;
+            painted[center + i] = true;
+        }
     }
     return painted;
-  }  
+}
 
-  // 建立橫檔
+// 建立橫檔
 function makRung(start, grid, target) {
-    const rungRule =scaffoldArray.role.acnchor
+    const rungRule = scaffoldArray.role.acnchor
     let rungArray = getrungValue(rungRule)
     const scaling = scaffoldArray.base.scaling;
     const rung = document.getElementById(target)
@@ -1483,7 +1488,7 @@ function makRung(start, grid, target) {
         const itemID = `${target}_rung_${el.viewId}`
         const item = document.getElementById(itemID)
         if (!item) {
-            const y0 = start[1] - el.coord[1]  * scaling
+            const y0 = start[1] - el.coord[1] * scaling
             childGroup.setAttribute('id', itemID);
             childGroup.setAttribute('st_y', y0)
             rung.appendChild(childGroup)
@@ -1495,22 +1500,22 @@ function makRung(start, grid, target) {
             }
         }
     })
-  }
-  
-  // 取得橫桿規則
-  function getrungValue(value) {
+}
+
+// 取得橫桿規則
+function getrungValue(value) {
     switch (value) {
-      case 1:
-        return [0.45]
-        break;
-      case 2:
-        return [0.45, 0.9]
-        break;
-      case 3:
-        return [0.45, 0.9, 1.35]
-        break;
+        case 1:
+            return [0.45]
+            break;
+        case 2:
+            return [0.45, 0.9]
+            break;
+        case 3:
+            return [0.45, 0.9, 1.35]
+            break;
     }
-  }
+}
 
 // 變更橫桿規則
 // 取得所有橫桿，依據橫桿的大小更改橫桿
@@ -1732,7 +1737,7 @@ selectView.addEventListener('change', e => {
         } else if (selectViewValue.includes("正面圖")) {
             resetViewBox(100 + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.x * scaling + 80, maxWidth.z * scaling + 130, "step03Svg")
         } else if (selectViewValue.includes("右側視圖")) {
-            resetViewBox(150 + maxWidth.x * scaling + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.y * scaling + 80 , maxWidth.z * scaling + 130, "step03Svg")
+            resetViewBox(150 + maxWidth.x * scaling + maxWidth.y * scaling, maxWidth.y * scaling + 100, maxWidth.y * scaling + 80, maxWidth.z * scaling + 130, "step03Svg")
         } else if (selectViewValue.includes("後視圖")) {
             resetViewBox(200 + maxWidth.x * scaling + maxWidth.y * scaling * 2, maxWidth.y * scaling + 100, maxWidth.x * scaling + 80, maxWidth.z * scaling + 130, "step03Svg")
         }
@@ -1847,11 +1852,11 @@ function fixRectHeight(targetId, inputValue) {
         // 要多加z欄位
         let newItem = array.filter((item) => item.z === size)[0]
         const length = baseWidth.z.length
-        for (i = 0; i < target - size; i ++) {
+        for (i = 0; i < target - size; i++) {
             const item = {
-                x:newItem.x,
-                y:newItem.y,
-                z:newItem.z + i + 1,
+                x: newItem.x,
+                y: newItem.y,
+                z: newItem.z + i + 1,
                 border: [newItem.border[0], newItem.border[1], scaffoldArray.base.height],
                 startCoor: [newItem.startCoor[0], newItem.startCoor[1], newItem.startCoor[2] + newItem.border[2] + i * scaffoldArray.base.height]
             }
@@ -1917,18 +1922,18 @@ finishAndDownload.addEventListener('click', e => {
 
 const convertSvgToDxf = async (svgData) => {
     try {
-      const data = getNewJson();
-      const response = await axios.post('/api', {
-        data: JSON.stringify(data)
-      });
-      const res = response.data;
-      if (res === 'success') {
-        location.href = '/dxfTest.dxf';
-      }
+        const data = getNewJson();
+        const response = await axios.post('/api', {
+            data: JSON.stringify(data)
+        });
+        const res = response.data;
+        if (res === 'success') {
+            location.href = '/dxfTest.dxf';
+        }
     } catch (error) {
     }
-  };
-  
+};
+
 
 function getNewJson() {
     const newJson = {
@@ -1941,4 +1946,4 @@ function getNewJson() {
         anchor: scaffoldArray.anchor
     }
     return newJson
-  }
+}
