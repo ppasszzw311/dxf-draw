@@ -90,9 +90,7 @@ submit.addEventListener('click', e => {
     }
     // 建立基礎長度
     createBaseWidth();
-    //createBaseGrid();
     // 產生平面底圖
-    //rectangleSvg(step02StartXY.x, step02StartXY.y, itemValue.itemX, itemValue.itemY, scaffoldArray.base.coordY, scaffoldArray.base.coordX)
     arrowDesc() // 產生箭頭
 })
 //drawBaseGrid
@@ -101,6 +99,10 @@ function createBaseWidth() {
     const xCount = scaffoldArray.base.coordX
     const yCount = scaffoldArray.base.coordY
     const zCount = scaffoldArray.base.coordZ
+    // INITIAL baseWidth
+    baseWidth.x = [];
+    baseWidth.y = [];
+    baseWidth.z = [];
     for (i = 0; i < xCount; i++) {
         const item = { id: i + 1, startCoor: i * scaffoldArray.base.width, border: scaffoldArray.base.width }
         baseWidth.x.push(item)
@@ -362,7 +364,7 @@ function makeStair(x, y, long, width, rotate) {
     const childGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     let stairId = `stair_${x}_${y}`
     childGroup.setAttribute('id', stairId);
-    // 将子元素添加为父元素的子元素
+    // 將子元素添加為父元素的子元素
     stair.appendChild(childGroup);
 
     // 取得該網格的起始值跟寬度
@@ -642,10 +644,12 @@ function selectModeMouse() {
             if (fileDivs[i].getBoundingClientRect().right > l && fileDivs[i].getBoundingClientRect().bottom > t
                 && fileDivs[i].getBoundingClientRect().left < l + w && fileDivs[i].getBoundingClientRect().top < t + h) {
                 // 该DOM元素被选中，进行处理
-                selectedEls.push(fileDivs[i]);
-                makeStairtags(fileDivs[i].id)
-                // 加上顏色
-                fileDivs[i].classList.add('select-stair')
+                if (fileDivs[i].id.substring(0, 8) !== "descGrid") {
+                    selectedEls.push(fileDivs[i]);
+                    makeStairtags(fileDivs[i].id)
+                    // 加上顏色
+                    fileDivs[i].classList.add('select-stair')
+                }
             }
         }
         // ===============選擇梯位===================== 確認儲存
@@ -702,22 +706,19 @@ function selectModeMouse() {
             let selectItemY = fileDivs[i].getBoundingClientRect().top
             if (selectItemX > l && selectItemY > t && selectItemX < l + w && selectItemY < t + h) {
                 let anchorId = `anchor_${fileDivs[i].id.split('_')[1]}_${fileDivs[i].id.split('_')[2]}`
-                try {
-                    console.log(anchorId)
-                    let anchorItem = document.getElementById(anchorId)
-                    if (anchorItem === null) {
-                        throw "anchorItem is null"
+                if (fileDivs[i].id.substring(0, 8) !== "descGrid") {
+                    try {
+                        let anchorItem = document.getElementById(anchorId)
+                        if (anchorItem === null) {
+                            throw "anchorItem is null"
+                        }
+                    } catch (e) {
+                        const shape = circle(fileDivs[i].getAttribute('x'), fileDivs[i].getAttribute('y'), anchorId)
+                        anchor.appendChild(shape);
+                        // 该DOM元素被选中，进行处理
+                        makeAnchortags(anchorId)
                     }
-                } catch (e) {
-                    console.log("onMouseUpModeAnchor111")
-                    const shape = circle(fileDivs[i].getAttribute('x'), fileDivs[i].getAttribute('y'), anchorId)
-                    anchor.appendChild(shape);
-                    // 该DOM元素被选中，进行处理
-                    makeAnchortags(anchorId)
                 }
-
-                // 加上顏色
-                //fileDivs[i].classList.add('select-stair')
             }
         }
         // ===============選擇梯位===================== 確認儲存
@@ -732,9 +733,6 @@ function selectModeMouse() {
 
 
     function onMouseUpModeHigh(e) {
-        // if (dblclickEvent.classList.contains('dblclick')) {
-
-        // }
         if (!mouseOn) return;
         clearEventBubble(e);
         mouseOn = false;
@@ -853,7 +851,7 @@ function makeAnchortags(id) {
           </span>
         </div>`;
 
-    // 使用 querySelectorAll 获取所有具有 "anchorList" 类名的元素
+    // 使用 querySelectorAll 取得所有具有 "anchorList" 的元素
     const anchorTags = document.querySelectorAll('.anchorList');
 
     if (anchorTags.length > 0) {
@@ -1017,8 +1015,6 @@ submit2.addEventListener('click', e => {
 
     // 建立五視圖
     buildFiveView()
-    // 建立三視圖
-    //buildThreeView()
 })
 
 // 計算梯位位置
@@ -1171,17 +1167,18 @@ function buildFiveView() {
     // left
     // 重置
     scaffoldArray.fiveViewGrid.leftSideView = []
+
     array.forEach(el => {
-        console.log(el)
         const r_id = parseInt(yArray.length - el.y + 1)
         const start_y = yArray.filter((item) => item.id === r_id)[0].startCoor
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
         const border_y = yArray.filter((item) => item.id === r_id)[0].border
         const border_z = zArray.filter((item) => item.id === el.z)[0].border
+        const adj_y =  Number((maxWidth.y - start_y - border_y).toFixed(2))
         const item = {
             id: `${el.x}_${el.y}_${el.z}`,
             viewId: `${r_id}_${el.z}`,
-            coord: [start_y, start_z],
+            coord: [adj_y, start_z],
             border: [border_y, border_z]
         }
         scaffoldArray.fiveViewGrid.leftSideView.push(item)
@@ -1246,10 +1243,11 @@ function buildFiveView() {
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
         const border_x = xArray.filter((item) => item.id === r_id)[0].border
         const border_z = zArray.filter((item) => item.id === el.z)[0].border
+        const adj_x =  Number((maxWidth.x - start_x - border_x).toFixed(2))
         const item = {
             id: `${el.x}_${el.y}_${el.z}`,
             viewId: `${r_id}_${el.z}`,
-            coord: [start_x, start_z],
+            coord: [adj_x, start_z],
             border: [border_x, border_z]
         }
         scaffoldArray.fiveViewGrid.rearView.push(item)
@@ -1921,6 +1919,8 @@ finishAndDownload.addEventListener('click', e => {
 })
 
 const convertSvgToDxf = async (svgData) => {
+    const loading = document.querySelector(".bar")
+    loading.style.display = "block"
     try {
         const data = getNewJson();
         const response = await axios.post('/api', {
@@ -1928,6 +1928,7 @@ const convertSvgToDxf = async (svgData) => {
         });
         const res = response.data;
         if (res === 'success') {
+            loading.style.display = "none"
             location.href = '/dxfTest.dxf';
         }
     } catch (error) {
