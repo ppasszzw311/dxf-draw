@@ -111,3 +111,34 @@ button:hover {
 .tab-content {
   width: 100%;
 }
+
+/* 設定svg 容器的大小 */
+.svg-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* aspect ratio */
+  vertical-align: top;
+}
+
+/* 設定svg tool box 的樣式位置 */
+.svg-toolbox-mode {
+  position: absolute;
+  display: flex;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.25rem;
+  background-color: rgb(119 255 139 / 50%);
+}
+
+/* 設定svg 選取元件的 位置 */
+.info-list-control {
+display: block;
+    position: absolute;
+    top: 0.5rem;
+    right: 1.5rem;
+    background-color: tomato;
+    min-width: 140px;
+    padding: 0.45rem 1.1rem;
+    border: none;
+    border-radius: 5px;
+}

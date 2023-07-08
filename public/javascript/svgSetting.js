@@ -1809,10 +1809,10 @@ function setRectHighInput(rectArray) {
             if (inputValue === '0') {
                 rectArray.forEach(el => {
                     const coord = el.id.split('_')
-                    rectHigh.removeChild(document.getElementById(`text_rect_${coord[1]}_${coord[2]}`))
-                    el.remove();
-                    fixRectHeight(`${coord[1]}_${coord[2]}`, inputValue)
                     try {
+                        rectHigh.removeChild(document.getElementById(`text_rect_${coord[1]}_${coord[2]}`))
+                        el.remove();
+                        fixRectHeight(`${coord[1]}_${coord[2]}`, inputValue)
                         stair.removeChild(document.getElementById(`stair_${coord[1]}_${coord[2]}`))
                     } catch (e) {
                     }
@@ -1820,8 +1820,11 @@ function setRectHighInput(rectArray) {
             } else if (Number(inputValue) > 0) {
                 rectArray.forEach(el => {
                     const coord = el.id.split('_')
-                    document.querySelector(`#text_rect_${coord[1]}_${coord[2]}`).innerHTML = inputValue
-                    fixRectHeight(`${coord[1]}_${coord[2]}`, inputValue)
+                    if (coord[0] !== "descGrid") {
+                        document.querySelector(`#text_rect_${coord[1]}_${coord[2]}`).innerHTML = inputValue
+                        fixRectHeight(`${coord[1]}_${coord[2]}`, inputValue)
+                    }
+                    
                 })
             }
         }
