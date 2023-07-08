@@ -1143,6 +1143,27 @@ function buildFiveView() {
         }
     })
 
+    // reverse xArray 
+    const xArrayReverse = [];
+    xArray.forEach(item => {
+        const newItem = {
+            id: item.id,
+            border: item.border,
+            startCoor: maxWidth.x - item.startCoor - item.border
+        }
+        xArrayReverse.push(newItem)
+    })
+    // reverse yArray
+    const yArrayReverse = [];
+    yArray.forEach(item => {
+        const newItem = {
+            id: item.id,
+            border: item.border,
+            startCoor: maxWidth.y - item.startCoor - item.border
+        }
+        yArrayReverse.push(newItem)
+    })
+
     // 先分別生成
     // top
     // 重置
@@ -1169,16 +1190,14 @@ function buildFiveView() {
     scaffoldArray.fiveViewGrid.leftSideView = []
 
     array.forEach(el => {
-        const r_id = parseInt(yArray.length - el.y + 1)
-        const start_y = yArray.filter((item) => item.id === r_id)[0].startCoor
+        const start_y = yArrayReverse.filter((item) => item.id === el.y)[0].startCoor
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
-        const border_y = yArray.filter((item) => item.id === r_id)[0].border
+        const border_y = yArrayReverse.filter((item) => item.id === el.y)[0].border
         const border_z = zArray.filter((item) => item.id === el.z)[0].border
-        const adj_y =  Number((maxWidth.y - start_y - border_y).toFixed(2))
         const item = {
             id: `${el.x}_${el.y}_${el.z}`,
-            viewId: `${r_id}_${el.z}`,
-            coord: [adj_y, start_z],
+            viewId: `${el.y}_${el.z}`,
+            coord: [start_y, start_z],
             border: [border_y, border_z]
         }
         scaffoldArray.fiveViewGrid.leftSideView.push(item)
@@ -1238,16 +1257,14 @@ function buildFiveView() {
     // 重置
     scaffoldArray.fiveViewGrid.rearView = []
     array.forEach(el => {
-        const r_id = xArray.length - el.x + 1
-        const start_x = xArray.filter((item) => item.id === r_id)[0].startCoor
+        const start_x = xArrayReverse.filter((item) => item.id === el.x)[0].startCoor
         const start_z = zArray.filter((item) => item.id === el.z)[0].startCoor
-        const border_x = xArray.filter((item) => item.id === r_id)[0].border
+        const border_x = xArrayReverse.filter((item) => item.id === el.x)[0].border
         const border_z = zArray.filter((item) => item.id === el.z)[0].border
-        const adj_x =  Number((maxWidth.x - start_x - border_x).toFixed(2))
         const item = {
             id: `${el.x}_${el.y}_${el.z}`,
-            viewId: `${r_id}_${el.z}`,
-            coord: [adj_x, start_z],
+            viewId: `${el.x}_${el.z}`,
+            coord: [start_x, start_z],
             border: [border_x, border_z]
         }
         scaffoldArray.fiveViewGrid.rearView.push(item)
