@@ -27,24 +27,24 @@
           </div>
 
 
-
+          <!-- 測試檔案上傳-->
+          <form id="upload-form" name="uploadForm" action='/upload_files' enctype='multipart/form-data'>
+            <div>
+              <input id="uploadInput" type="file" multiple />
+              <label for="fileNum">Selected files:</label>
+              <output id="fileNum">0</output>;
+              <label for="fileSize">Total size:</label>
+              <output id="fileSize">0</output>
+            </div>
+            <div><button class="submit-btn" type='submit'>Upload</button></div>
+          </form>
           <form role="form" action="index.html" class="login-box">
             <div class="tab-content" id="main_form">
               <!-- 步驟1 -->
               <div class="tab-pane active" role="tabpanel" id="step1">
                 <h4 class="text-center">步驟1</h4>
-                <!-- 測試檔案上傳-->
-                <!--<form name="uploadForm">
-                  <div>
-                    <input id="uploadInput" type="file" multiple />
-                    <label for="fileNum">Selected files:</label>
-                    <output id="fileNum">0</output>;
-                    <label for="fileSize">Total size:</label>
-                    <output id="fileSize">0</output>
-                  </div>
-                  <div><input type="submit" value="Send file" /></div>
-                </form> -->
-            
+                
+                
                 <h6 class="text-center">輸入工程標號</h6>
                 <div>
                   <input class="form-control" id="case-name" name="case-name" onchange="recordCaseName()" type="text"  />

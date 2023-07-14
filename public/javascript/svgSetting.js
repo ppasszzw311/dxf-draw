@@ -2242,6 +2242,30 @@ uploadInput.addEventListener(
   false
 );
 
+// 上傳檔案
+// script.js
+const uploadForm = document.getElementById("upload-form");
+
+uploadForm.addEventListener("submit", submitForm);
+
+function submitForm(e) {
+    e.preventDefault();
+    const files = document.getElementById("uploadInput");
+    const formData = new FormData();
+    for(let i =0; i < files.files.length; i++) {
+        formData.append("file", files.files[i]);
+    }
+    fetch("/upload_files", {
+        method: 'POST',
+        body: formData,
+        // headers: {
+        //   "Content-Type": "multipart/form-data"
+        // }
+    })
+        .then((res) => console.log(res))
+        .catch((err) => ("Error occured", err));
+}
+
 function getNewJson() {
   const newJson = {
     fileName: caseName, // caseName

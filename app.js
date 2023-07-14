@@ -5,9 +5,11 @@ const { JSDOM } = jsdom;
 import bodyParser from "body-parser";
 import { fileURLToPath} from 'url';
 import { dirname, join } from "path";
+import multer from "multer";
 import mariadb from 'mariadb';
 
 import {start, stepMake, built, newPage, step01, step02, step03, step04, uploadResult} from './lib/handlers.js';
+import fs from "fs";
 
 
 const app = express()
@@ -24,6 +26,9 @@ const __dirname = dirname(__filename);
 app.use(express.static(__dirname + '/public'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//
+const upload = multer({ dist: "uploads/" });
 
 
 app.engine('handlebars', engine({ extname: '.hbs', defaultLayouts: 'main', }))
@@ -65,7 +70,21 @@ app.post('/convert', (req, res) => {
   res.download(filePath);
 });
 
-app.post('/api', uploadResult)
+// 上傳檔案
+app.post("/upload_files", upload.single('file'), (req, res) => {
+  if (!req.file) {
+    res.status(400).send("No file upload")
+    return
+  }
+  console.log(req.body)
+  console.log(req.file)
+  const file = req.file;
+  const fileName = `./public/uploads/${file.originalname}`
+  fs.writeFileSync(fileName, file.buffer)
+  res.send("file upload")
+})
+
+app.post('/api', uploadResult);
 
 // // 連線資料庫
 // const pool = mariadb.createPool({
