@@ -33,6 +33,22 @@
               <!-- 步驟1 -->
               <div class="tab-pane active" role="tabpanel" id="step1">
                 <h4 class="text-center">步驟1</h4>
+                <!-- 測試檔案上傳-->
+                <!--<form name="uploadForm">
+                  <div>
+                    <input id="uploadInput" type="file" multiple />
+                    <label for="fileNum">Selected files:</label>
+                    <output id="fileNum">0</output>;
+                    <label for="fileSize">Total size:</label>
+                    <output id="fileSize">0</output>
+                  </div>
+                  <div><input type="submit" value="Send file" /></div>
+                </form> -->
+            
+                <h6 class="text-center">輸入工程標號</h6>
+                <div>
+                  <input class="form-control" id="case-name" name="case-name" onchange="recordCaseName()" type="text"  />
+                </div>
                 <h6 class="text-center">輸入長寬參數</h6>
                 <div class="row">
                   <div class="col-md-12">
