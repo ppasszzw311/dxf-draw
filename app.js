@@ -1,7 +1,5 @@
 import express from "express";
 import { engine } from 'express-handlebars';
-import jsdom from "jsdom";
-const { JSDOM } = jsdom;
 import bodyParser from "body-parser";
 import { fileURLToPath} from 'url';
 import { dirname, join } from "path";

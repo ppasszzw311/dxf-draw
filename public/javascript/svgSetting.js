@@ -2169,6 +2169,149 @@ textDesc.addEventListener("click", (e) => {
   $("#exampleModal").modal("hide");
 });
 
+/**
+ * 選取樓高的設定
+ *  
+ * */
+const selectBtn = document.querySelector(".btn-toolbox")
+selectBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  // 選擇開啟選樓狀態
+  // 樓高選擇器 TODO
+  let mouseOnStep03 = false;
+  let startX = 0;
+  let startY = 0;
+  // 目標選取區
+  const selectAvg = document.getElementById("step03Svg");
+  selectAvg.addEventListener("mousedown", onMouseDownModeStep03);
+  selectAvg.addEventListener("mousemove", onMouseMoveModeStep03);
+  selectAvg.addEventListener("mouseup", onMouseUpModeStep03);
+
+  // 開啟按鈕選擇
+  const toolboxLine = document.querySelectorAll(".toolbox-line")
+  openToolbox()
+  function openToolbox() {
+    toolboxLine.forEach((el) => {
+      if (el.classList.contains("d-none")) {
+        el.classList.remove("d-none")
+        el.classList.add("d-block")
+      } else {
+        el.classList.remove("d-block")
+        el.classList.add("d-none")
+      }
+    })
+  }
+  const svgSubmitBtn = document.querySelector(".btn-toolbox-submit");
+  svgSubmitBtn.addEventListener("click", onSubmitSave)
+
+  function onSubmitSave(e) {
+    e.preventDefault();
+    // 關閉按鈕選擇
+    openToolbox()
+    svgSubmitBtn.removeEventListener("click", onSubmitSave)
+    selectAvg.removeEventListener("mousedown", onMouseDownModeStep03);
+    selectAvg.removeEventListener("mousemove", onMouseMoveModeStep03);
+    selectAvg.removeEventListener("mouseup", onMouseUpModeStep03);
+  }
+
+  // 點選 mouse up的事件
+  function onMouseUpModeStep03(e) {
+    if (!mouseOnStep03) return;
+    clearEventBubble(e);
+    mouseOnStep03 = false;
+    var selDiv = document.getElementById("selectDiv");
+    var fileDivs = document.getElementsByTagName("rect");
+    var selectedEls = [];
+    // 取得參數
+    var l = selDiv.offsetLeft;
+    var t = selDiv.offsetTop;
+    var w = selDiv.offsetWidth;
+    var h = selDiv.offsetHeight;
+    for (var i = 0; i < fileDivs.length; i++) {
+      var sl = fileDivs[i].offsetWidth + fileDivs[i].offsetLeft;
+      var st = fileDivs[i].offsetHeight + fileDivs[i].offsetTop;
+      if (
+        fileDivs[i].getBoundingClientRect().right > l &&
+        fileDivs[i].getBoundingClientRect().bottom > t &&
+        fileDivs[i].getBoundingClientRect().left < l + w &&
+        fileDivs[i].getBoundingClientRect().top < t + h
+      ) {
+        // 该DOM元素被选中，进行处理
+        // 排除topview 
+        
+        if (fileDivs[i].id.substring(0, 8) !== "descGrid" && fileDivs[i].id.substring(0,7) !== "topView" ) {
+          selectedEls.push(fileDivs[i]);
+          // 加上顏色
+          fileDivs[i].classList.add("select-stair");
+        }
+        console.log(fileDivs[i])
+      }
+    }
+    // ===============選擇梯位===================== 確認儲存
+    // 恢复参数
+    selDiv.style.display = "none";
+  }
+
+  function onMouseMoveModeStep03(e) {
+    if (!mouseOnStep03) return;
+    clearEventBubble(e);
+    var _x = e.clientX;
+    var _y = e.clientY;
+    var selDiv = document.getElementById("selectDiv");
+    selDiv.style.display = "block";
+    selDiv.style.left = Math.min(_x, startX) + "px";
+    selDiv.style.top = Math.min(_y, startY) + "px";
+    selDiv.style.width = Math.abs(_x - startX) + "px";
+    selDiv.style.height = Math.abs(_y - startY) + "px";
+  }
+
+  function onMouseDownModeStep03(e) {
+    clearEventBubble(e);
+    if (e.buttons !== 1 || e.which !== 1) return;
+    mouseOnStep03 = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    var selDiv = document.createElement("div");
+    selDiv.style.cssText =
+      "position:absolute;width:0;height:0;margin:0;padding:0;border:1px dashed #eee;background-color:#aaa;z-index:1000;opacity:0.6;display:none;";
+    selDiv.id = "selectDiv";
+    document.body.appendChild(selDiv);
+    selDiv.style.left = startX + "px";
+    selDiv.style.top = startY + "px";
+  }
+
+  function clearEventBubble(e) {
+    if (e.stopPropagation) e.stopPropagation();
+    else e.cancelBubble = true;
+    if (e.preventDefault) e.preventDefault();
+    else e.returnValue = false;
+  }
+
+  // 重置參數
+  function resetStep03Rect() {
+    const topView = document.getElementById("topView");
+    const frontView = document.getElementById("frontView");
+    const rearView = document.getElementById("rearView");
+    const leftSideView = document.getElementById("leftSideView");
+    const rightSideView = document.getElementById("rightSideView");
+    while (topView.firstChild) {
+      topView.removeChild(topView.firstChild);
+    }
+    while (frontView.firstChild) {
+      frontView.removeChild(frontView.firstChild);
+    }
+    while (rearView.firstChild) {
+      rearView.removeChild(rearView.firstChild);
+    }
+    while (leftSideView.firstChild) {
+      leftSideView.removeChild(leftSideView.firstChild);
+    }
+    while (rightSideView.firstChild) {
+      rightSideView.removeChild(rightSideView.firstChild);
+    }
+  }
+})
+
 // 關閉並儲存
 const saveAddAnchor = document.getElementById("saveAddAnchor");
 saveAddAnchor.addEventListener("click", (e) => {

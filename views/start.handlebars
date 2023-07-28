@@ -227,7 +227,6 @@
 
                 </div>
 
-
                 <ul class="list-inline pull-right">
                   <li><button type="button" class="default-btn prev-step" id="step02back">回到上一步</button></li>
                   <li><button type="button" class="default-btn next-step skip-btn" id="download-button">取消</button></li>
@@ -239,78 +238,99 @@
               <div class="tab-pane" role="tabpanel" id="step3">
                 <h4 class="text-center">步驟 3</h4>
                 <h6 class="text-center">產生正、側視圖，輸入橫桿高、錨定點、生成斜撐</h6>
+                <div class="svg-container svg-container-step02">
+                  <svg id="step03Svg" width="100%" height="560px" viewBox="0 0 600 300">
+                    <g id="step03rect">
+                      <g id="topView"></g>
+                      <g id="frontView"></g>
+                      <g id="rearView"></g>
+                      <g id="leftSideView"></g>
+                      <g id="rightSideView"></g>
+                      <g id="anchorFiveView"></g>
+                      <g id="topViewText"></g>
+                      <g id="topViewStair"></g>
+                    </g>
+                  </svg>
+                  <div class="svg-toolbox-mode" id="selectMode2">
+                      
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inputMode" id="fiveView01" value="平面圖">
+                      <label class="form-check-label" for="fiveView01">平面圖</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inputMode" id="fiveView02" value="左側視圖">
+                      <label class="form-check-label" for="fiveView02">左側視圖</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inputMode" id="fiveView03" value="正面圖">
+                      <label class="form-check-label" for="fiveView03">正面圖</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inputMode" id="fiveView04" value="右側視圖">
+                      <label class="form-check-label" for="fiveView04">右側視圖</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inputMode" id="fiveView05" value="後視圖">
+                      <label class="form-check-label" for="fiveView05">後視圖</label>
+                    </div>
+                  </div>
+                  <!-- 選擇高度用的 -->
+                  <div class="svg-toolbox-select">
+                    <div class="toolbox-line d-block">
+                      <button class="btn-toolbox" type="button">設定樓高</button>
+                    </div>
+                    <div class="toolbox-line d-none">
+                      <button class="btn-toolbox-cancel" type="button">取消</button>
+                      <button class="btn-toolbox-submit" type="button">確認</button>
+                    </div>
+                  </div>
+                  <div class="info-list-control">
+                    <div class="form-group">
+                      <label for="rungRole">選擇橫桿規則</label>
+
+                      <select class="form-control" id="rungRole" name="rungRole" aria-label="選擇橫桿模式">
+                        <option value="1">0.45一根</option>
+                        <option value="2">0.45, 0.9 兩根</option>
+                        <option value="3">0.45, 0.9, 1.35 三根</option>
+                      </select>
+                    </div>
+                    <div class="list-content">
+                      <a href="#listtwo" data-toggle="collapse" aria-expanded="false" aria-controls="listtwo">錨定點高度
+                        <i class="fa fa-chevron-down"></i></a>
+                      <div class="collapse show" id="listtwo">
+                        <div class="list-box" id="anchorSelect3D">
+                        </div>
+                        <div>
+                          <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addAnchorModal">
+                            新增錨定點
+                          </button>
+                        </div>
+                      </div>
+  
+                    </div>
+                    <div class="list-content">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        加入文字註解
+                      </button>
+                    </div>
+                  </div>
+                  
+                </div>
                 <div class="row">
                   <div class="col-md-10">
-                    <div class="d-flex justify-content-center m-2" id="selectMode2">
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView01" value="平面圖">
-                        <label class="form-check-label" for="fiveView01">平面圖</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView02" value="左側視圖">
-                        <label class="form-check-label" for="fiveView02">左側視圖</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView03" value="正面圖">
-                        <label class="form-check-label" for="fiveView03">正面圖</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView04" value="右側視圖">
-                        <label class="form-check-label" for="fiveView04">右側視圖</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inputMode" id="fiveView05" value="後視圖">
-                        <label class="form-check-label" for="fiveView05">後視圖</label>
-                      </div>
-                    </div>
+                    
 
-                    <svg id="step03Svg" width="100%" height="450px" viewBox="0 0 600 300">
-                      <g id="step03rect">
-                        <g id="topView"></g>
-                        <g id="frontView"></g>
-                        <g id="rearView"></g>
-                        <g id="leftSideView"></g>
-                        <g id="rightSideView"></g>
-                        <g id="anchorFiveView"></g>
-                        <g id="topViewText"></g>
-                        <g id="topViewStair"></g>
-                      </g>
+                    
+                    
 
-                    </svg>
                   </div>
                   <div class="col-md-2">
                     <div class="all-info-container">
                       <div class="list-content">
-                        <div class="form-group">
-                          <label for="rungRole">選擇橫桿規則</label>
-
-                          <select class="form-control" id="rungRole" name="rungRole" aria-label="選擇橫桿模式">
-                            <option value="1">0.45一根</option>
-                            <option value="2">0.45, 0.9 兩根</option>
-                            <option value="3">0.45, 0.9, 1.35 三根</option>
-                          </select>
-                        </div>
+                        
                       </div>
-                      <div class="list-content">
-                        <a href="#listtwo" data-toggle="collapse" aria-expanded="false" aria-controls="listtwo">錨定點高度
-                          <i class="fa fa-chevron-down"></i></a>
-                        <div class="collapse show" id="listtwo">
-                          <div class="list-box" id="anchorSelect3D">
-                          </div>
-                          <div>
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                              data-target="#addAnchorModal">
-                              新增錨定點
-                            </button>
-                          </div>
-                        </div>
-
-                      </div>
-                      <div class="list-content">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                          加入文字註解
-                        </button>
-                      </div>
+                      
                     </div>
                     <div class="selecter-close" id="control-bar">
                       <div class="row">
@@ -346,7 +366,7 @@
                   </div>
                 </div>
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="default-btn prev-step" id="backTostep03">返回上一步</button></li>
+                  <li><button type="button" class="default-btn prev-step" id="backTostep03">返回上一步1</button></li>
                   <li><button type="button" class="default-btn next-step skip-btn">取消</button></li>
                   <li><button type="button" class="default-btn next-step" id="step03">繼續前往下一步</button></li>
                 </ul>
@@ -371,7 +391,7 @@
                 </div>
 
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="default-btn prev-step">返回上一步</button></li>
+                  <li><button type="button" class="default-btn prev-step">返回上一步2</button></li>
                   <li><button type="button" class="default-btn next-step" id="finishAndDownload">完成</button></li>
                   <div id="dxf"></div>
                 </ul>
