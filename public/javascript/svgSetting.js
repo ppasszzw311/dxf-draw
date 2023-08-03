@@ -388,6 +388,21 @@ function rectangle(x, y, width, height, id) {
   shape.setAttributeNS(null, "stroke", "blue");
   return shape;
 }
+// 建立立面格子
+function rectangleZ(x, y, width, height, id, dataId) {
+  var svgns = "http://www.w3.org/2000/svg";
+  var shape = document.createElementNS(svgns, "rect");
+  shape.setAttributeNS(null, "id", id);
+  shape.setAttributeNS(null, "x", x);
+  shape.setAttributeNS(null, "y", y); //width="150" height="150"
+  shape.setAttributeNS(null, "dataId", dataId);
+  shape.setAttributeNS(null, "width", width);
+  shape.setAttributeNS(null, "height", height);
+  shape.setAttributeNS(null, "fill", "white");
+  shape.setAttributeNS(null, "stroke", "blue");
+  return shape;
+}
+
 // 建立平面底格文字
 function rectangleHeight(x, y, width, height, id) {
   // 校正
@@ -1452,9 +1467,10 @@ function makRectangle(start, grid, target) {
       const height = el.border[1] * scaling;
       const x = start[0] + el.coord[0] * scaling;
       const y = start[1] - (el.coord[1] + el.border[1]) * scaling;
+      const dataId = el.id;
       // drawing.drawRect(x, y, x + width, y + long)
 
-      const shape = rectangle(x, y, width, height, id);
+      const shape = rectangleZ(x, y, width, height, id, dataId);
       goal.appendChild(shape);
     }
   });
@@ -1780,7 +1796,6 @@ function createAnchorPoint() {
     const x = el.split("_")[0];
     const y = el.split("_")[1];
     const z = el.split("_")[2];
-    // todo 錨定點
     const topId = `topView_rect_${x}_${y}`;
     const leftId = `leftSideView_rect_${max[1] - y + 1}_${z}`;
     const rightId = `rightSideView_rect_${y}_${z}`;
@@ -1813,55 +1828,55 @@ function addAnchorPoint(targetId, target) {
 // ============================================================
 ///  ==========================================================
 
-function getAnchorArray(xyArr) {
-  const target = document.getElementById("anchorFiveView");
-  const anchorList = scaffoldArray.anchorPoint;
-  const topViewAnchor = xyArr[0];
-  const leftSideViewAnchor = xyArr[1];
-  const frontViewAnchor = xyArr[2];
-  const rightViewAnchor = xyArr[3];
-  const rearViewAnchor = xyArr[4];
-  let circleX;
-  let circleY;
-  let anchorId;
+// function getAnchorArray(xyArr) {
+//   const target = document.getElementById("anchorFiveView");
+//   const anchorList = scaffoldArray.anchor;
+//   const topViewAnchor = xyArr[0];
+//   const leftSideViewAnchor = xyArr[1];
+//   const frontViewAnchor = xyArr[2];
+//   const rightViewAnchor = xyArr[3];
+//   const rearViewAnchor = xyArr[4];
+//   let circleX;
+//   let circleY;
+//   let anchorId;
 
-  anchorList.forEach((el) => {
-    const anchorId3D = `anchor3D_${el.x}_${el.y}_${el.z}`;
-    makeAnchortags3D(anchorId3D);
-    // topView
-    circleX = topViewAnchor.x + (el.x - 1) * itemValue.itemX;
-    circleY = topViewAnchor.y - el.y * itemValue.itemY;
-    anchorId = `anchor_topView_${el.x}_${el.y}_${el.z}`;
-    let shapeT = circle(circleX, circleY, anchorId);
-    target.appendChild(shapeT);
-    // left side view
-    circleX =
-      leftSideViewAnchor.x + (threeViewCount.y - el.y) * itemValue.itemY;
-    circleY = leftSideViewAnchor.y - el.z * itemValue.itemZ;
-    anchorId = `anchor_leftSideView_${el.x}_${el.y}_${el.z}`;
-    let shapeL = circle(circleX, circleY, anchorId);
-    target.appendChild(shapeL);
-    // front view
-    circleX = frontViewAnchor.x + (el.x - 1) * itemValue.itemX;
-    circleY = frontViewAnchor.y - el.z * itemValue.itemZ;
-    anchorId = `anchor_frontView_${el.x}_${el.y}_${el.z}`;
-    let shapeF = circle(circleX, circleY, anchorId);
-    target.appendChild(shapeF);
-    // right side view
-    circleX = rightViewAnchor.x + el.y * itemValue.itemY;
-    circleY = rightViewAnchor.y - el.z * itemValue.itemZ;
-    anchorId = `anchor_rightSideView_${el.x}_${el.y}_${el.z}`;
-    let shapeR = circle(circleX, circleY, anchorId);
-    target.appendChild(shapeR);
+//   anchorList.forEach((el) => {
+//     const anchorId3D = `anchor3D_${el.x}_${el.y}_${el.z}`;
+//     makeAnchortags3D(anchorId3D);
+//     // topView
+//     circleX = topViewAnchor.x + (el.x - 1) * itemValue.itemX;
+//     circleY = topViewAnchor.y - el.y * itemValue.itemY;
+//     anchorId = `anchor_topView_${el.x}_${el.y}_${el.z}`;
+//     let shapeT = circle(circleX, circleY, anchorId);
+//     target.appendChild(shapeT);
+//     // left side view
+//     circleX =
+//       leftSideViewAnchor.x + (threeViewCount.y - el.y) * itemValue.itemY;
+//     circleY = leftSideViewAnchor.y - el.z * itemValue.itemZ;
+//     anchorId = `anchor_leftSideView_${el.x}_${el.y}_${el.z}`;
+//     let shapeL = circle(circleX, circleY, anchorId);
+//     target.appendChild(shapeL);
+//     // front view
+//     circleX = frontViewAnchor.x + (el.x - 1) * itemValue.itemX;
+//     circleY = frontViewAnchor.y - el.z * itemValue.itemZ;
+//     anchorId = `anchor_frontView_${el.x}_${el.y}_${el.z}`;
+//     let shapeF = circle(circleX, circleY, anchorId);
+//     target.appendChild(shapeF);
+//     // right side view
+//     circleX = rightViewAnchor.x + el.y * itemValue.itemY;
+//     circleY = rightViewAnchor.y - el.z * itemValue.itemZ;
+//     anchorId = `anchor_rightSideView_${el.x}_${el.y}_${el.z}`;
+//     let shapeR = circle(circleX, circleY, anchorId);
+//     target.appendChild(shapeR);
 
-    // rear view
-    circleX = rearViewAnchor.x + (threeViewCount.x - el.x) * itemValue.itemX;
-    circleY = rearViewAnchor.y - el.z * itemValue.itemZ;
-    anchorId = `anchor_rearView_${el.x}_${el.y}_${el.z}`;
-    let shapeB = circle(circleX, circleY, anchorId);
-    target.appendChild(shapeB);
-  });
-}
+//     // rear view
+//     circleX = rearViewAnchor.x + (threeViewCount.x - el.x) * itemValue.itemX;
+//     circleY = rearViewAnchor.y - el.z * itemValue.itemZ;
+//     anchorId = `anchor_rearView_${el.x}_${el.y}_${el.z}`;
+//     let shapeB = circle(circleX, circleY, anchorId);
+//     target.appendChild(shapeB);
+//   });
+// }
 
 // 設定anchor tags
 function makeAnchortags3D(id) {
@@ -2171,47 +2186,52 @@ textDesc.addEventListener("click", (e) => {
 
 /**
  * 選取樓高的設定
- *  
+ *
  * */
-const selectBtn = document.querySelector(".btn-toolbox")
+const selectBtn = document.querySelector(".btn-toolbox");
 selectBtn.addEventListener("click", (e) => {
   e.preventDefault();
   // 選擇開啟選樓狀態
-  // 樓高選擇器 TODO
+  // 樓高選擇器
   let mouseOnStep03 = false;
   let startX = 0;
   let startY = 0;
   // 目標選取區
-  const selectAvg = document.getElementById("step03Svg");
-  selectAvg.addEventListener("mousedown", onMouseDownModeStep03);
-  selectAvg.addEventListener("mousemove", onMouseMoveModeStep03);
-  selectAvg.addEventListener("mouseup", onMouseUpModeStep03);
+  const selectSvg = document.getElementById("step03Svg");
+  selectSvg.addEventListener("mousedown", onMouseDownModeStep03);
+  selectSvg.addEventListener("mousemove", onMouseMoveModeStep03);
+  selectSvg.addEventListener("mouseup", onMouseUpModeStep03);
 
   // 開啟按鈕選擇
-  const toolboxLine = document.querySelectorAll(".toolbox-line")
-  openToolbox()
+  const toolboxLine = document.querySelectorAll(".toolbox-line");
+  openToolbox();
   function openToolbox() {
     toolboxLine.forEach((el) => {
       if (el.classList.contains("d-none")) {
-        el.classList.remove("d-none")
-        el.classList.add("d-block")
+        el.classList.remove("d-none");
+        el.classList.add("d-block");
       } else {
-        el.classList.remove("d-block")
-        el.classList.add("d-none")
+        el.classList.remove("d-block");
+        el.classList.add("d-none");
       }
-    })
+    });
   }
   const svgSubmitBtn = document.querySelector(".btn-toolbox-submit");
-  svgSubmitBtn.addEventListener("click", onSubmitSave)
+  svgSubmitBtn.addEventListener("click", onSubmitSave);
+  const svgCancelBtn = document.querySelector(".btn-toolbox-cancel");
+  svgCancelBtn.addEventListener("click", onCancelSave);
 
   function onSubmitSave(e) {
     e.preventDefault();
     // 關閉按鈕選擇
-    openToolbox()
-    svgSubmitBtn.removeEventListener("click", onSubmitSave)
-    selectAvg.removeEventListener("mousedown", onMouseDownModeStep03);
-    selectAvg.removeEventListener("mousemove", onMouseMoveModeStep03);
-    selectAvg.removeEventListener("mouseup", onMouseUpModeStep03);
+    openToolbox();
+    svgSubmitBtn.removeEventListener("click", onSubmitSave);
+    selectSvg.removeEventListener("mousedown", onMouseDownModeStep03);
+    selectSvg.removeEventListener("mousemove", onMouseMoveModeStep03);
+    selectSvg.removeEventListener("mouseup", onMouseUpModeStep03);
+
+    // 尋找被標色的物件並處理
+    deleteSelectRect();
   }
 
   // 點選 mouse up的事件
@@ -2237,14 +2257,17 @@ selectBtn.addEventListener("click", (e) => {
         fileDivs[i].getBoundingClientRect().top < t + h
       ) {
         // 该DOM元素被选中，进行处理
-        // 排除topview 
-        
-        if (fileDivs[i].id.substring(0, 8) !== "descGrid" && fileDivs[i].id.substring(0,7) !== "topView" ) {
+        // 排除topview
+
+        if (
+          fileDivs[i].id.substring(0, 8) !== "descGrid" &&
+          fileDivs[i].id.substring(0, 7) !== "topView"
+        ) {
           selectedEls.push(fileDivs[i]);
           // 加上顏色
           fileDivs[i].classList.add("select-stair");
         }
-        console.log(fileDivs[i])
+        console.log(fileDivs[i]);
       }
     }
     // ===============選擇梯位===================== 確認儲存
@@ -2287,6 +2310,159 @@ selectBtn.addEventListener("click", (e) => {
     else e.returnValue = false;
   }
 
+  // 尋找被標色的物件並且刪除
+  function deleteSelectRect() {
+    // 1. 從第三部的長方形區塊，找到有被標顏色的區塊
+    const step03Rect = document.getElementById("step03rect");
+    const rectangles = step03Rect.querySelectorAll("rect");
+    //定義一個空的陣列
+    let selectArr = [];
+    rectangles.forEach((el) => {
+      // 取得id dataid class
+      const id = el.id;
+      const idArrr = id.split("_");
+      const dataId = el.getAttribute("dataId");
+      const className = el.classList;
+      // 2. 取得區塊的id
+      if (idArrr[0] !== "topView" && className.contains("select-stair")) {
+        // 將id放進陣列
+        const idCat = el.id.split("_");
+        selectArr.push({category: idCat[0], dataId: dataId});
+      }
+    });
+    // 取得最大的x, y
+    const maxX = scaffoldArray.base.coordX;
+    const maxY = scaffoldArray.base.coordY;
+    // 依據所取得的類別分別擴增array
+    let selectArrNew = [];
+    selectArr.forEach((el) => {
+      if (el.category === "leftSideView" || el.category === "rightSideView") {
+        // 針對x展開處理
+        const parId = el.dataId.split("_");
+        for (i = 0; i < maxX; i++) {
+          const newId = `${i+1}_${parId[1]}_${parId[2]}`;
+          selectArrNew.push(newId);
+        }
+      } else if (el.category === "frontView" || el.category === "backView") {
+        // 針對y展開處理
+        const parId = el.dataId.split("_");
+        for (i = 0; i < maxY; i++) {
+          const newId = `${parId[0]}_${i+1}_${parId[2]}`;
+          selectArrNew.push(newId);
+        }
+      } 
+    })
+    console.log("selectArrNew");
+    console.log(selectArrNew);
+
+    // 移除重複項
+    const uniqueArray = [...new Set(selectArrNew)];
+    console.log(uniqueArray);
+    // 2. 從五視圖的列表中，如果id有被找到，則直接移除，不然就加進新的
+    let resultArray = [];
+    resultArray = scaffoldArray.fiveViewGrid.topView.filter(
+      (item) => !uniqueArray.includes(item.id)
+    );
+    scaffoldArray.fiveViewGrid.topView = resultArray;
+    resultArray = scaffoldArray.fiveViewGrid.leftSideView.filter(
+      (item) => !uniqueArray.includes(item.id)
+    );
+    scaffoldArray.fiveViewGrid.leftSideView = resultArray;
+    resultArray = scaffoldArray.fiveViewGrid.frontView.filter(
+      (item) => !uniqueArray.includes(item.id)
+    );
+    scaffoldArray.fiveViewGrid.frontView = resultArray;
+    resultArray = scaffoldArray.fiveViewGrid.rightSideView.filter(
+      (item) => !uniqueArray.includes(item.id)
+    );
+    scaffoldArray.fiveViewGrid.rightSideView = resultArray;
+    resultArray = scaffoldArray.fiveViewGrid.rearView.filter(
+      (item) => !uniqueArray.includes(item.id)
+    );
+    scaffoldArray.fiveViewGrid.rearView = resultArray;
+
+    resetStep03Rect();
+    
+    // scaling
+    const scaling = scaffoldArray.base.scaling;
+
+    // 新增 topView
+    startPoint = [40 + maxWidth.y * scaling + 60, 40 + maxWidth.y * scaling];
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.topView, "topView");
+    makRectText(startPoint, scaffoldArray.fiveViewGrid.topView);
+    makStairTop(startPoint, scaffoldArray.fiveViewGrid.topView);
+
+    // 新增Left sid View
+    startPoint = [40, 40 + 160 + maxWidth.y * scaling + maxWidth.z * scaling];
+    makRectangle(
+      startPoint,
+      scaffoldArray.fiveViewGrid.leftSideView,
+      "leftSideView"
+    );
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.leftSideView);
+    makDiagonalBraces(
+      startPoint,
+      scaffoldArray.fiveViewGrid.leftSideView,
+      "leftSideView"
+    );
+    makRung(
+      startPoint,
+      scaffoldArray.fiveViewGrid.leftSideView,
+      "leftSideView"
+    );
+
+    // 新增 fornt view
+    startPoint = [
+      40 + maxWidth.y * scaling + 60,
+      40 + 160 + maxWidth.y * scaling + maxWidth.z * scaling,
+    ];
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.frontView, "frontView");
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.frontView);
+    makDiagonalBraces(
+      startPoint,
+      scaffoldArray.fiveViewGrid.frontView,
+      "frontView"
+    );
+    makRung(startPoint, scaffoldArray.fiveViewGrid.frontView, "frontView");
+
+    startPoint = [
+      40 + maxWidth.y * scaling + 120 + maxWidth.x * scaling,
+      40 + 160 + maxWidth.y * scaling + maxWidth.z * scaling,
+    ];
+    makRectangle(
+      startPoint,
+      scaffoldArray.fiveViewGrid.rightSideView,
+      "rightSideView"
+    );
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.rightSideView);
+    makDiagonalBraces(
+      startPoint,
+      scaffoldArray.fiveViewGrid.rightSideView,
+      "rightSideView"
+    );
+    makRung(
+      startPoint,
+      scaffoldArray.fiveViewGrid.rightSideView,
+      "rightSideView"
+    );
+
+    startPoint = [
+      40 + maxWidth.y * 2 * scaling + 180 + maxWidth.x * scaling,
+      40 + 160 + maxWidth.y * scaling + maxWidth.z * scaling,
+    ];
+    makRectangle(startPoint, scaffoldArray.fiveViewGrid.rearView, "rearView");
+    makStairStand(startPoint, scaffoldArray.fiveViewGrid.rearView);
+    makDiagonalBraces(
+      startPoint,
+      scaffoldArray.fiveViewGrid.rearView,
+      "rearView"
+    );
+    makRung(startPoint, scaffoldArray.fiveViewGrid.rearView, "rearView");
+
+    // 生成錨定點
+    createAnchorPoint();
+  }
+
   // 重置參數
   function resetStep03Rect() {
     const topView = document.getElementById("topView");
@@ -2310,7 +2486,27 @@ selectBtn.addEventListener("click", (e) => {
       rightSideView.removeChild(rightSideView.firstChild);
     }
   }
-})
+
+  // 取消所選取的區塊並且回到上一步
+  function onCancelSave() {
+    e.preventDefault();
+    // 關閉按鈕選擇
+    svgCancelBtn.removeEventListener("click", onCancelSave)
+    openToolbox();
+    
+    // 1. 從第三部的長方形區塊，找到有被標顏色的區塊
+    const step03Rect = document.getElementById("step03rect");
+    const rectangles = step03Rect.querySelectorAll("rect");
+    //定義一個空的陣列
+    rectangles.forEach((el) => {
+      const className = el.classList;
+      // 2. 取得區塊的id
+      if (className.contains("select-stair")) {
+        el.classList.remove("select-stair");
+      }
+    });
+  }
+});
 
 // 關閉並儲存
 const saveAddAnchor = document.getElementById("saveAddAnchor");
@@ -2319,14 +2515,11 @@ saveAddAnchor.addEventListener("click", (e) => {
   const addAnchorInfoX = document.getElementById("addAnchorInfoX").value;
   const addAnchorInfoY = document.getElementById("addAnchorInfoY").value;
   const addAnchorInfoZ = document.getElementById("addAnchorInfoZ").value;
-  if (addAnchorInfoX === "" && addAnchorInfoY === "" && addAnchorInfoZ === "") {
-  } else {
-    scaffoldArray.anchorPoint.push({
-      x: parseInt(addAnchorInfoX),
-      y: parseInt(addAnchorInfoY),
-      z: parseInt(addAnchorInfoZ),
-    });
-    getAnchorArray(xyArray);
+  if (addAnchorInfoX !== "" && addAnchorInfoY !== "" && addAnchorInfoZ !== "") {
+    console.log(addAnchorInfoX,addAnchorInfoY,addAnchorInfoZ)
+    scaffoldArray.anchor.push(`${addAnchorInfoX}_${addAnchorInfoY}_${addAnchorInfoZ}`);
+    scaffoldArray.anchor = [...new Set(scaffoldArray.anchor)];
+    createAnchorPoint()
   }
   $("#addAnchorModal").modal("hide");
 });
@@ -2392,21 +2585,21 @@ const uploadForm = document.getElementById("upload-form");
 uploadForm.addEventListener("submit", submitForm);
 
 function submitForm(e) {
-    e.preventDefault();
-    const files = document.getElementById("uploadInput");
-    const formData = new FormData();
-    for(let i =0; i < files.files.length; i++) {
-        formData.append("file", files.files[i]);
-    }
-    fetch("/upload_files", {
-        method: 'POST',
-        body: formData,
-        // headers: {
-        //   "Content-Type": "multipart/form-data"
-        // }
-    })
-        .then((res) => console.log(res))
-        .catch((err) => ("Error occured", err));
+  e.preventDefault();
+  const files = document.getElementById("uploadInput");
+  const formData = new FormData();
+  for (let i = 0; i < files.files.length; i++) {
+    formData.append("file", files.files[i]);
+  }
+  fetch("/upload_files", {
+    method: "POST",
+    body: formData,
+    // headers: {
+    //   "Content-Type": "multipart/form-data"
+    // }
+  })
+    .then((res) => console.log(res))
+    .catch((err) => ("Error occured", err));
 }
 
 function getNewJson() {
