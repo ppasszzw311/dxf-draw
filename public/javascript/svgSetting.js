@@ -2352,12 +2352,8 @@ selectBtn.addEventListener("click", (e) => {
         }
       } 
     })
-    console.log("selectArrNew");
-    console.log(selectArrNew);
-
     // 移除重複項
     const uniqueArray = [...new Set(selectArrNew)];
-    console.log(uniqueArray);
     // 2. 從五視圖的列表中，如果id有被找到，則直接移除，不然就加進新的
     let resultArray = [];
     resultArray = scaffoldArray.fiveViewGrid.topView.filter(
@@ -2537,6 +2533,7 @@ const convertSvgToDxf = async (svgData) => {
   loading.style.display = "block";
   try {
     const data = getNewJson();
+    console.log(JSON.stringify(data));
     const response = await axios.post("/api", {
       data: JSON.stringify(data),
     });
