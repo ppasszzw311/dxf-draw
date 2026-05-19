@@ -4,3 +4,5 @@ __pycache__/
 prototype/output/
 prototype/.cache/
 backend/.cache/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo

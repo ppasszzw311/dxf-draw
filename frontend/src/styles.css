@@ -1,0 +1,240 @@
+:root {
+  color-scheme: light;
+  font-family: system-ui, "Microsoft JhengHei", sans-serif;
+  color: #1f2933;
+  background: #f4f6f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 1px solid #bcccdc;
+  background: #fff;
+  color: #1f2933;
+  border-radius: 4px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+button.primary,
+button.active {
+  background: #1463ff;
+  border-color: #1463ff;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 24px;
+  background: #fff;
+  border-bottom: 1px solid #d8dde6;
+}
+
+.topbar h1 {
+  font-size: 24px;
+  margin: 0 0 6px;
+}
+
+.topbar p {
+  margin: 0;
+  color: #52606d;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.topbar-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 330px 1fr;
+  min-height: calc(100vh - 86px);
+}
+
+.sidebar {
+  background: #fff;
+  border-right: 1px solid #d8dde6;
+  padding: 18px;
+  overflow-y: auto;
+}
+
+.sidebar section + section {
+  margin-top: 22px;
+}
+
+.sidebar h2 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+.sidebar label {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #3e4c59;
+}
+
+.sidebar input {
+  width: 100%;
+  border: 1px solid #cbd2d9;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tool-grid button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.status-grid span {
+  background: #f8fafc;
+  border: 1px solid #d8dde6;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.messages {
+  margin: 0;
+  padding-left: 18px;
+  color: #3e4c59;
+  font-size: 13px;
+}
+
+.workspace {
+  padding: 18px;
+}
+
+.canvas-card {
+  background: #fff;
+  border: 1px solid #d8dde6;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.editor-canvas {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 170px);
+  min-height: 420px;
+  background: #fbfcfe;
+}
+
+.cell rect {
+  fill: #fff;
+  stroke: #687386;
+  stroke-width: 1.5;
+}
+
+.cell.hovered rect {
+  stroke: #1463ff;
+}
+
+.cell.selected rect {
+  fill: #e8f1ff;
+  stroke: #1463ff;
+  stroke-width: 3;
+}
+
+.mark {
+  pointer-events: none;
+}
+
+.stair {
+  stroke: #d62f2f;
+  stroke-width: 3;
+}
+
+.anchor {
+  fill: none;
+  stroke: #9b2fd6;
+  stroke-width: 3;
+}
+
+.rung {
+  stroke: #2878c8;
+  stroke-width: 2.5;
+}
+
+.bracing {
+  stroke: #15803d;
+  stroke-width: 3;
+}
+
+.height-label {
+  pointer-events: none;
+  font-size: 18px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: #293241;
+}
+
+.hints {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  color: #52606d;
+  font-size: 13px;
+}
+
+@media (max-width: 980px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid #d8dde6;
+  }
+}
