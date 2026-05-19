@@ -6,3 +6,4 @@ prototype/.cache/
 backend/.cache/
 frontend/dist/
 frontend/tsconfig.tsbuildinfo
+frontend/*.log

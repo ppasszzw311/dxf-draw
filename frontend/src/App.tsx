@@ -1,11 +1,13 @@
 import type { ComponentType } from "react";
-import { Anchor, Braces, Download, Footprints, MousePointer2, Ruler, Undo2 } from "lucide-react";
+import { Anchor, Braces, Download, Footprints, Minus, MousePointer2, Plus, Ruler, Undo2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { exportDxf } from "./api/dxf";
-import { EditorCanvas } from "./components/EditorCanvas";
+import { ProjectionView } from "./components/ProjectionView";
 import { buildScaffoldModel } from "./editor/buildScaffold";
+import { buildProjectionSet } from "./editor/projection";
 import {
   createEditorState,
+  adjustHeight,
   handleKey,
   setActiveTool,
   summarize,
@@ -40,6 +42,7 @@ export function App() {
   const [isExporting, setIsExporting] = useState(false);
 
   const summary = useMemo(() => summarize(state), [state]);
+  const projections = useMemo(() => buildProjectionSet(base, state.cells), [base, state.cells]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -49,6 +52,7 @@ export function App() {
         return next;
       });
     };
+
     document.addEventListener("keydown", listener);
     return () => document.removeEventListener("keydown", listener);
   }, []);
@@ -60,7 +64,7 @@ export function App() {
       const response = await exportDxf(scaffold);
       setState((current) => ({
         ...current,
-        messages: [`DXF 已匯出：${response.fileName}`, ...current.messages].slice(0, 6),
+        messages: [`已匯出 DXF：${response.fileName}`, ...current.messages].slice(0, 6),
       }));
     } catch (error) {
       setState((current) => ({
@@ -80,15 +84,21 @@ export function App() {
     setBase((current) => ({ ...current, [key]: value }));
   }
 
+  function adjustSelectedHeight(delta: number) {
+    setState((current) => adjustHeight(current, delta));
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
         <div>
-          <h1>施工架設計稿編輯器</h1>
-          <p>React 版本前端，使用工具模式編輯格線，並串接 Python DXF 匯出服務。</p>
+          <h1>鷹架設計稿編輯器</h1>
+          <p>React 前端搭配 Python DXF 匯出服務，支援五視圖編輯與鍵盤操作。</p>
         </div>
         <div className="topbar-actions">
-          <button type="button" onClick={resetGrid}>重建格線</button>
+          <button type="button" onClick={resetGrid}>
+            重新建立格線
+          </button>
           <button type="button" className="primary" onClick={onExport} disabled={isExporting}>
             <Download size={16} />
             {isExporting ? "匯出中" : "匯出 DXF"}
@@ -132,6 +142,16 @@ export function App() {
                 );
               })}
             </div>
+            <div className="height-actions">
+              <button type="button" onClick={() => adjustSelectedHeight(1)}>
+                <Plus size={16} />
+                增加層數
+              </button>
+              <button type="button" onClick={() => adjustSelectedHeight(-1)}>
+                <Minus size={16} />
+                減少層數
+              </button>
+            </div>
           </section>
 
           <section>
@@ -139,7 +159,7 @@ export function App() {
             <div className="status-grid">
               <span>工具：{toolLabels[state.activeTool]}</span>
               <span>選取：{summary.selected}</span>
-              <span>高度：{summary.height}</span>
+              <span>總高度：{summary.height}</span>
               <span>樓梯：{summary.stair}</span>
               <span>錨點：{summary.anchor}</span>
               <span>橫桿：{summary.rung}</span>
@@ -151,19 +171,29 @@ export function App() {
           <section>
             <h2>訊息</h2>
             <ul className="messages">
-              {state.messages.map((message, index) => <li key={`${message}-${index}`}>{message}</li>)}
+              {state.messages.map((message, index) => (
+                <li key={`${message}-${index}`}>{message}</li>
+              ))}
             </ul>
           </section>
         </aside>
 
         <section className="workspace">
-          <div className="canvas-card">
-            <EditorCanvas state={state} setState={setState} columns={base.coordX} rows={base.coordY} />
+          <div className="projection-board">
+            <ProjectionView base={base} state={state} setState={setState} view={projections.topView} />
+            <div className="projection-grid">
+              <ProjectionView base={base} state={state} setState={setState} view={projections.leftSideView} />
+              <ProjectionView base={base} state={state} setState={setState} view={projections.frontView} />
+              <ProjectionView base={base} state={state} setState={setState} view={projections.rightSideView} />
+              <ProjectionView base={base} state={state} setState={setState} view={projections.rearView} />
+            </div>
           </div>
+
           <div className="hints">
-            <span>V/H/S/A/R/B 切換工具</span>
-            <span>Shift + 點擊多選</span>
+            <span>V / H / S / A / R / B 切換工具</span>
+            <span>Shift + 點擊可多選</span>
             <span>Enter 或 Space 套用工具</span>
+            <span>+ / - 或按鈕可直接調整層數</span>
             <span>Ctrl + Z / Ctrl + Y 復原與重做</span>
           </div>
         </section>
