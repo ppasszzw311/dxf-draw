@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>編輯器狀態 Prototype</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, "Microsoft JhengHei", sans-serif;
+        background: #f4f5f7;
+        color: #1f2933;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        min-height: 100vh;
+      }
+
+      .workspace {
+        padding: 24px;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 1px solid #c7ccd4;
+        background: #fff;
+        border-radius: 4px;
+        padding: 8px 10px;
+        cursor: pointer;
+      }
+
+      button.active {
+        background: #1463ff;
+        border-color: #1463ff;
+        color: #fff;
+      }
+
+      .status {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+        font-size: 14px;
+      }
+
+      .status span {
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        padding: 5px 8px;
+      }
+
+      .canvas-shell {
+        background: #fff;
+        border: 1px solid #d8dde6;
+        border-radius: 6px;
+        padding: 12px;
+      }
+
+      svg {
+        display: block;
+        width: 100%;
+        height: min(72vh, 680px);
+        background: #fbfcfe;
+      }
+
+      .cell rect {
+        fill: #fff;
+        stroke: #687386;
+        stroke-width: 1.5;
+      }
+
+      .cell.hovered rect {
+        stroke: #1463ff;
+      }
+
+      .cell.selected rect {
+        fill: #e8f1ff;
+        stroke: #1463ff;
+        stroke-width: 3;
+      }
+
+      .mark {
+        pointer-events: none;
+      }
+
+      .stair {
+        stroke: #d62f2f;
+        stroke-width: 3;
+      }
+
+      .anchor {
+        fill: none;
+        stroke: #9b2fd6;
+        stroke-width: 3;
+      }
+
+      .rung {
+        stroke: #2878c8;
+        stroke-width: 2.5;
+      }
+
+      .bracing {
+        stroke: #15803d;
+        stroke-width: 3;
+      }
+
+      .height-label {
+        pointer-events: none;
+        font-size: 18px;
+        font-weight: 700;
+        text-anchor: middle;
+        fill: #293241;
+      }
+
+      aside {
+        border-left: 1px solid #d8dde6;
+        background: #fff;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 20px;
+        margin: 0 0 12px;
+      }
+
+      h2 {
+        font-size: 15px;
+        margin: 20px 0 8px;
+      }
+
+      ul {
+        padding-left: 20px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          border-left: 0;
+          border-top: 1px solid #d8dde6;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="workspace">
+        <div class="toolbar">
+          <button type="button" data-tool="select">V 選取</button>
+          <button type="button" data-tool="height">H 高度</button>
+          <button type="button" data-tool="stair">S 樓梯</button>
+          <button type="button" data-tool="anchor">A 錨點</button>
+          <button type="button" data-tool="rung">R 橫桿</button>
+          <button type="button" data-tool="bracing">B 斜撐</button>
+        </div>
+        <div class="status" id="status"></div>
+        <div class="canvas-shell">
+          <svg id="editorSvg" role="img" aria-label="鷹架格線編輯器 prototype"></svg>
+        </div>
+      </section>
+      <aside>
+        <h1>編輯器狀態 Prototype</h1>
+        <p>這個頁面用來驗證工具模式、快捷鍵、選取與 undo/redo，不處理正式 DXF 輸出。</p>
+        <h2>快捷鍵</h2>
+        <ul>
+          <li>V：選取</li>
+          <li>H：高度</li>
+          <li>S：樓梯</li>
+          <li>A：錨點</li>
+          <li>R：橫桿</li>
+          <li>B：斜撐</li>
+          <li>Shift + 點擊：多選</li>
+          <li>Enter / Space：套用目前工具</li>
+          <li>Ctrl + Z：復原</li>
+          <li>Ctrl + Y：重做</li>
+          <li>Delete：清除選取標記</li>
+          <li>Esc：取消</li>
+        </ul>
+        <h2>訊息</h2>
+        <ul id="messageList"></ul>
+      </aside>
+    </main>
+    <script src="./editor_state_demo_standalone.js"></script>
+  </body>
+</html>

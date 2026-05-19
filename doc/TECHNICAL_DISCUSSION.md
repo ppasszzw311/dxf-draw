@@ -41,6 +41,62 @@ User Input / Editor Action
 
 SVG 和 DXF 應該共用同一份 layout model，避免前端畫一套、後端再用另一套邏輯重畫。
 
+## 鷹架單元方向與視圖語意
+
+鷹架是用來包覆施工中的建築物，因此單元尺寸的長、寬、高不能只當成抽象 X/Y/Z。系統需要保留「哪一個面是沿建築物立面展開」的語意。
+
+目前討論的方向：
+
+```text
+base.long    沿建築物立面方向
+base.width   往外伸出/離建築物深度方向
+base.height  垂直高度方向
+```
+
+以 `180 x 90 x 210` 的單元為例：
+
+- 正視圖應主要看到 `180 x 210`。
+- 平面圖應主要看到 `180 x 90`。
+- 側視圖應呈現側向深度與高度的關係，重構時需對照原始程式既有邏輯確認。
+
+這會影響 layout engine 的設計。後續不應只用泛用 grid projection 推圖，而應有明確的 view mapping：
+
+```text
+frontView: long x height
+topView: long x width
+sideView: width x height
+```
+
+若原始程式在側視圖或左右/前後視圖排列上已有特殊處理，重構時應先寫成測試案例，避免視圖方向改錯。
+
+## 暫存稿、版本與匯出紀錄
+
+設計稿會被多次編輯，因此系統需要區分「編輯中的暫存資料」與「已匯出的 DXF 檔案」。
+
+建議資料概念：
+
+```text
+DesignDraft
+  代表目前設計稿主體
+
+DesignVersion
+  代表每次儲存的 scaffold model 版本
+
+ExportRecord
+  代表每次匯出的 DXF 檔案
+```
+
+匯出 DXF 前，資料應視為 draft/version；匯出後才建立 export record。這樣可以避免使用者混淆「目前正在編輯的版本」與「已交付或已下載的 DXF」。
+
+建議命名方向：
+
+```text
+draft_{caseName}_{timestamp}
+export_{caseName}_{timestamp}_{sequence}.dxf
+```
+
+若後續使用資料庫，檔案名稱可以只作為顯示與下載用途，實際關聯以 ID 管理。
+
 ## 中文字與 LibreCAD 相容策略
 
 ### 問題說明
@@ -280,6 +336,20 @@ Secondary target: AutoCAD / other DXF editors
 - 工具模式是否容易擴充。
 - 快捷鍵是否降低操作負擔。
 - command history 是否可支援 undo / redo。
+
+目前已建立 `prototype/editor_state_core.js`、`prototype/editor_state_demo.html` 與 `prototype/validate_editor_state.mjs`。命令列驗證已確認選取、多選、工具快捷鍵、高度/錨點套用、復原、重做與刪除標記可以正常運作。
+
+驗證指令：
+
+```bash
+node prototype/validate_editor_state.mjs
+```
+
+驗證結果：
+
+```text
+Editor state validation: OK
+```
 
 ## 初步決策
 
